@@ -1,0 +1,30 @@
+{
+    "name": "ivancli/chargify",
+    "description": "This is a Chargify API wrapper owned by IvanCLI",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ivan Li",
+            "email": "ivan.li@hotmail.com"
+        }
+    ],
+    "type": "library",
+    "require": {
+        "php": ">=5.5.0",
+        "illuminate/cache": "~5.0"
+    },
+    "keywords":[
+        "chargify",
+        "subscription",
+        "laravel"
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "~4.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "IvanCLI\\Chargify\\": "src/Chargify/"
+        }
+    },
+    "minimum-stability": "dev"
+}
