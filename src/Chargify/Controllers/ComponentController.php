@@ -10,12 +10,11 @@ namespace IvanCLI\Chargify\Controllers;
 
 use Illuminate\Support\Facades\Cache;
 use IvanCLI\Chargify\Models\Component;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 class ComponentController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     /**
      * Create a component within a product family
@@ -121,7 +120,7 @@ class ComponentController
         $component = $this->_post($url, $data);
         if (isset($component->$plural_kind)) {
             $output = $this->__assign($component->$plural_kind);
-            $this->flushComponents();
+            Cache::forget("product_families.{$product_family_id}.components");
             return $output;
         } else {
             return $component;

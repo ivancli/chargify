@@ -10,12 +10,11 @@ namespace IvanCLI\Chargify\Controllers;
 
 
 use IvanCLI\Chargify\Models\Transaction;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 class TransactionController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     public function all()
     {

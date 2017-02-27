@@ -11,12 +11,11 @@ namespace IvanCLI\Chargify\Controllers;
 
 use Illuminate\Support\Facades\Cache;
 use IvanCLI\Chargify\Models\Product;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 class ProductController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     /**
      * Create a product
@@ -124,7 +123,8 @@ class ProductController
         $product = $this->_post($url, $data);
         if (isset($product->product)) {
             $output = $this->__assign($product->product);
-            $this->flushProducts();
+            Cache::forget("products");
+            Cache::forget("product_families.{$product_family_id}.products");
             return $output;
         } else {
             return $product;
@@ -146,7 +146,9 @@ class ProductController
         $product = $this->_put($url, $data);
         if (isset($product->product)) {
             $output = $this->__assign($product->product);
-            $this->flushProducts();
+            Cache::forget("products");
+            Cache::forget("products.{$product_id}");
+            Cache::forget("product_families.{$output->product_family_id}.products");
             return $output;
         } else {
             return $product;

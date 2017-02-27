@@ -11,12 +11,11 @@ namespace IvanCLI\Chargify\Controllers;
 
 use Illuminate\Support\Facades\Cache;
 use IvanCLI\Chargify\Models\Coupon;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 class CouponController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     /**
      * Create a new coupon
@@ -177,7 +176,6 @@ class CouponController
         $coupon = $this->_post($url, $data);
         if (isset($coupon->coupon)) {
             $coupon = $this->__assign($coupon->coupon);
-            $this->flushCoupons();
         }
         return $coupon;
     }
@@ -197,7 +195,7 @@ class CouponController
         $coupon = $this->_put($url, $data);
         if (isset($coupon->coupon)) {
             $coupon = $this->__assign($coupon->coupon);
-            $this->flushCoupons();
+            Cache::forget("coupons.{$coupon_id}");
         }
         return $coupon;
     }
@@ -213,7 +211,7 @@ class CouponController
         $result = $this->_delete($url);
         if (is_null($result)) {
             $result = true;
-            $this->flushCoupons();
+            Cache::forget("coupons.{$coupon_id}");
         }
         return $result;
     }

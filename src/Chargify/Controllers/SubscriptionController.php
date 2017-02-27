@@ -4,7 +4,6 @@ namespace IvanCLI\Chargify\Controllers;
 use Illuminate\Support\Facades\Cache;
 use IvanCLI\Chargify\Models\Customer;
 use IvanCLI\Chargify\Models\Subscription;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 /**
@@ -20,7 +19,7 @@ use IvanCLI\Chargify\Traits\Curl;
  */
 class SubscriptionController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     /**
      * Create a new subscription
@@ -226,6 +225,27 @@ class SubscriptionController
     }
 
     /**
+     * @param $subscription_id
+     * @param $fields
+     * @return mixed
+     */
+    public function __override($subscription_id, $fields)
+    {
+        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}.json";
+        $data = array(
+            "subscription" => $fields
+        );
+        $data = json_decode(json_encode($data), false);
+        $result = $this->_put($url, json_encode($data));
+        Cache::forget("chargify.subscriptions.{$subscription_id}");
+        if(isset($result->subscription)){
+            $subscription = $this->__assign($result->subscription);
+            Cache::forget("chargify.customers.{$subscription->customer_id}.subscriptions");
+        }
+        return $result;
+    }
+
+    /**
      * @param $fields
      * @return Subscription|null
      */
@@ -239,8 +259,7 @@ class SubscriptionController
         $subscription = $this->_post($url, $data);
         if (isset($subscription->subscription)) {
             $subscription = $this->__assign($subscription->subscription);
-            $this->flushSubscriptions();
-            $this->flushCustomers();
+            Cache::forget("chargify.customers.{$subscription->customer_id}.subscriptions");
         }
         return $subscription;
     }
@@ -260,8 +279,8 @@ class SubscriptionController
         $subscription = $this->_post($url, $data);
         if (isset($subscription->subscription)) {
             $subscription = $this->__assign($subscription->subscription);
-            $this->flushSubscriptions();
-            $this->flushCustomers();
+            Cache::forget("chargify.subscriptions.{$subscription_id}");
+            Cache::forget("chargify.customers.{$subscription->customer_id}.subscriptions");
         }
         return $subscription;
     }
@@ -308,8 +327,8 @@ class SubscriptionController
         $subscription = $this->_post($url, $data);
         if (isset($subscription->subscription)) {
             $subscription = $this->__assign($subscription->subscription);
-            $this->flushSubscriptions();
-            $this->flushCustomers();
+            Cache::forget("chargify.subscriptions.{$subscription_id}");
+            Cache::forget("chargify.customers.{$subscription->customer_id}.subscriptions");
         }
         return $subscription;
     }
@@ -329,8 +348,8 @@ class SubscriptionController
         $subscription = $this->_put($url, $data);
         if (isset($subscription->subscription)) {
             $subscription = $this->__assign($subscription->subscription);
-            $this->flushSubscriptions();
-            $this->flushCustomers();
+            Cache::forget("chargify.subscriptions.{$subscription_id}");
+            Cache::forget("chargify.customers.{$subscription->customer_id}.subscriptions");
         }
         return $subscription;
     }
@@ -351,7 +370,8 @@ class SubscriptionController
         $data = json_decode(json_encode($data), false);
         $subscription = $this->_delete($url, json_encode($data));
         if (isset($subscription->subscription)) {
-            $this->flushSubscriptions();
+            Cache::forget("chargify.subscriptions.{$subscription_id}");
+            Cache::forget("chargify.customers.{$subscription->customer_id}.subscriptions");
             return $subscription->subscription;
         }
         return $subscription;
@@ -367,8 +387,8 @@ class SubscriptionController
         $subscription = $this->_put($url);
         if (isset($subscription->subscription)) {
             $subscription = $this->__assign($subscription->subscription);
-            $this->flushSubscriptions();
-            $this->flushCustomers();
+            Cache::forget("chargify.subscriptions.{$subscription_id}");
+            Cache::forget("chargify.customers.{$subscription->customer_id}.subscriptions");
         }
         return $subscription;
     }
@@ -384,8 +404,8 @@ class SubscriptionController
         $subscription = $this->_post($url);
         if (isset($subscription->subscription)) {
             $subscription = $this->__assign($subscription->subscription);
-            $this->flushSubscriptions();
-            $this->flushCustomers();
+            Cache::forget("chargify.subscriptions.{$subscription_id}");
+            Cache::forget("chargify.customers.{$subscription->customer_id}.subscriptions");
         }
         return $subscription;
     }
@@ -400,8 +420,8 @@ class SubscriptionController
         $output = $this->_delete($url);
         if ($output == "Coupon removed") {
             $subscription = $this->get($subscription_id);
-            $this->flushSubscriptions();
-            $this->flushCustomers();
+            Cache::forget("chargify.subscriptions.{$subscription_id}");
+            Cache::forget("chargify.customers.{$subscription->customer_id}.subscriptions");
             return true;
         }
         return $output;
@@ -417,29 +437,13 @@ class SubscriptionController
         $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}/payment_profiles/{$payment_profile_id}.json";
         $output = $this->_delete($url);
         if (!isset($output->errors)) {
-            $this->flushSubscriptions();
-            $this->flushCustomers();
-            $this->flushPaymentProfiles();
+            $subscription = $this->get($subscription_id);
+            Cache::forget("chargify.subscriptions.{$subscription_id}");
+            Cache::forget("chargify.customers.{$subscription->customer_id}.subscriptions");
+            Cache::forget("payment_profiles.{$payment_profile_id}");
             return true;
         }
         return $output;
-    }
-
-    /**
-     * @param $subscription_id
-     * @param $fields
-     * @return mixed
-     */
-    public function __override($subscription_id, $fields)
-    {
-        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}.json";
-        $data = array(
-            "subscription" => $fields
-        );
-        $data = json_decode(json_encode($data), false);
-        $result = $this->_put($url, json_encode($data));
-        $this->flushSubscriptions();
-        return $result;
     }
 
     /**

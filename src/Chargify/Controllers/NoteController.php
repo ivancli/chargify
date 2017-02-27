@@ -11,12 +11,11 @@ namespace IvanCLI\Chargify\Controllers;
 
 use Illuminate\Support\Facades\Cache;
 use IvanCLI\Chargify\Models\Note;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 class NoteController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     public function create($subscription_id, $fields)
     {
@@ -60,7 +59,7 @@ class NoteController
         $note = $this->_post($url, $data);
         if (isset($note->note)) {
             $note = $this->__assign($note->note);
-            $this->flushNotes();
+            Cache::forget("subscriptions.{$subscription_id}.notes");
         }
         return $note;
     }
@@ -75,7 +74,8 @@ class NoteController
         $note = $this->_put($url, $data);
         if (isset($note->note)) {
             $note = $this->__assign($note->note);
-            $this->flushNotes();
+            Cache::forget("subscriptions.{$subscription_id}.notes.{$note->id}");
+            Cache::forget("subscriptions.{$subscription_id}.notes");
         }
         return $note;
     }

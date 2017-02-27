@@ -11,12 +11,11 @@ namespace IvanCLI\Chargify\Controllers;
 
 use Illuminate\Support\Facades\Cache;
 use IvanCLI\Chargify\Models\Customer;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 class CustomerController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     public function create($fields)
     {
@@ -105,7 +104,7 @@ class CustomerController
         $customer = $this->_put($url, $data);
         if (isset($customer->customer)) {
             $customer = $this->__assign($customer->customer);
-            $this->flushCustomers();
+            Cache::forget("customers.{$customer_id}.link");
         }
         return $customer;
     }
@@ -116,7 +115,7 @@ class CustomerController
         $customer = $this->_delete($url);
         if (is_null($customer)) {
             $customer = true;
-            $this->flushCustomers();
+            Cache::forget("customers.{$customer_id}.link");
         }
         return $customer;
     }

@@ -10,7 +10,6 @@ namespace IvanCLI\Chargify\Controllers;
 
 
 use IvanCLI\Chargify\Models\Webhook;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 /**
@@ -19,7 +18,7 @@ use IvanCLI\Chargify\Traits\Curl;
  */
 class WebhookController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     /**
      * Load all webhooks

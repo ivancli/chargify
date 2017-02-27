@@ -10,12 +10,11 @@ namespace IvanCLI\Chargify\Controllers;
 
 
 use IvanCLI\Chargify\Models\Payment;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 class PaymentController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     public function create($subscription_id, $fields)
     {
@@ -51,7 +50,6 @@ class PaymentController
         $payment = $this->_post($url, $data);
         if (isset($payment->payment)) {
             $payment = $this->__assign($payment->payment);
-            $this->flushInvoices();
         }
         return $payment;
     }

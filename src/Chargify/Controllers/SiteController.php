@@ -9,7 +9,6 @@
 namespace IvanCLI\Chargify\Controllers;
 
 
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 /**
@@ -22,7 +21,7 @@ use IvanCLI\Chargify\Traits\Curl;
  */
 class SiteController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     /**
      * Get statistics of the site

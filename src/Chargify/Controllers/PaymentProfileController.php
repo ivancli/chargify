@@ -11,12 +11,11 @@ namespace IvanCLI\Chargify\Controllers;
 
 use Illuminate\Support\Facades\Cache;
 use IvanCLI\Chargify\Models\PaymentProfile;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 class PaymentProfileController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     public function create($fields)
     {
@@ -69,7 +68,7 @@ class PaymentProfileController
         $paymentProfile = $this->_put($url, $data);
         if (isset($paymentProfile->payment_profile)) {
             $paymentProfile = $this->__assign($paymentProfile->payment_profile);
-            $this->flushPaymentProfiles();
+            Cache::forget("payment_profiles.{$payment_profile_id}");
         }
         return $paymentProfile;
     }

@@ -11,12 +11,11 @@ namespace IvanCLI\Chargify\Controllers;
 
 use Illuminate\Support\Facades\Cache;
 use IvanCLI\Chargify\Models\ProductFamily;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 class ProductFamilyController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
 
     public function create($fields)
@@ -72,7 +71,7 @@ class ProductFamilyController
         $productFamily = $this->_post($url, $data);
         if (isset($productFamily->product_family)) {
             $productFamily = $this->__assign($productFamily->product_family);
-            $this->flushProductFamilies();
+            Cache::forget("product_families");
         }
         return $productFamily;
     }
@@ -84,8 +83,9 @@ class ProductFamilyController
         $coupon = $this->_delete($url);
         if (isset($coupon->coupon)) {
             $coupon = true;
-            $this->flushCoupons();
-            $this->flushProductFamilies();
+            Cache::forget("coupons.{$coupon_id}");
+            Cache::forget("product_families.{$product_family_id}");
+            Cache::forget("product_families");
         }
         return $coupon;
     }

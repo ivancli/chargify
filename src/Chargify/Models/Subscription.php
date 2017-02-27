@@ -9,7 +9,6 @@ use IvanCLI\Chargify\Controllers\NoteController;
 use IvanCLI\Chargify\Controllers\PaymentProfileController;
 use IvanCLI\Chargify\Controllers\ProductController;
 use IvanCLI\Chargify\Controllers\SubscriptionController;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 /**
@@ -29,7 +28,7 @@ use IvanCLI\Chargify\Traits\Curl;
  */
 class Subscription
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     public $id;
     public $activated_at;

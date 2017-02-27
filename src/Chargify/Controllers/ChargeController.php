@@ -10,12 +10,11 @@ namespace IvanCLI\Chargify\Controllers;
 
 
 use IvanCLI\Chargify\Models\Charge;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 class ChargeController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     public function create($subscription_id, $fields)
     {

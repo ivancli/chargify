@@ -10,12 +10,11 @@ namespace IvanCLI\Chargify\Controllers;
 
 
 use IvanCLI\Chargify\Models\Adjustment;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 class AdjustmentController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     /**
      * Create adjustment

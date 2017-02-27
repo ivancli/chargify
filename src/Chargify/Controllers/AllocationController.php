@@ -10,12 +10,11 @@ namespace IvanCLI\Chargify\Controllers;
 
 
 use IvanCLI\Chargify\Models\Allocation;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 class AllocationController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     /**
      * Create an allocation

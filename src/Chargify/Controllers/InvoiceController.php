@@ -11,7 +11,6 @@ namespace IvanCLI\Chargify\Controllers;
 
 use Illuminate\Support\Facades\Cache;
 use IvanCLI\Chargify\Models\Invoice;
-use IvanCLI\Chargify\Traits\CacheFlusher;
 use IvanCLI\Chargify\Traits\Curl;
 
 /**
@@ -20,7 +19,7 @@ use IvanCLI\Chargify\Traits\Curl;
  */
 class InvoiceController
 {
-    use Curl, CacheFlusher;
+    use Curl;
 
     /**
      * Load all invoices
