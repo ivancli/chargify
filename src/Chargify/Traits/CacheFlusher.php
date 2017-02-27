@@ -15,50 +15,50 @@ trait CacheFlusher
 {
     public function flushAll()
     {
-        Cache::tags('chargify')->flush();
+        Cache::forget('chargify');
     }
 
     public function flushComponents()
     {
-        Cache::tags('components')->flush();
+        Cache::forget('components');
     }
 
     public function flushCoupons()
     {
-        Cache::tags('coupons')->flush();
+        Cache::forget('coupons');
     }
 
     public function flushCustomers()
     {
-        Cache::tags('customers')->flush();
+        Cache::forget('customers');
     }
 
     public function flushNotes(){
-        Cache::tags('notes')->flush();
+        Cache::forget('notes');
     }
 
     public function flushInvoices()
     {
-        Cache::tags('invoices')->flush();
+        Cache::forget('invoices');
     }
 
     public function flushPaymentProfiles()
     {
-        Cache::tags('payment_profiles')->flush();
+        Cache::forget('payment_profiles');
     }
 
     public function flushProducts()
     {
-        Cache::tags('products')->flush();
+        Cache::forget('products');
     }
 
     public function flushProductFamilies()
     {
-        Cache::tags('product_families')->flush();
+        Cache::forget('product_families');
     }
 
     public function flushSubscriptions()
     {
-        Cache::tags('subscriptions')->flush();
+        Cache::forget('subscriptions');
     }
 }
