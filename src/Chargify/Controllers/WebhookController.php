@@ -20,6 +20,17 @@ class WebhookController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     /**
      * Load all webhooks
      *
@@ -48,7 +59,7 @@ class WebhookController
      */
     private function __all($queryString)
     {
-        $url = config('chargify.api_domain') . "webhooks.json";
+        $url = $this->apiDomain . "webhooks.json";
         if (!is_null($queryString)) {
             $url .= "?" . $queryString;
         }
@@ -71,7 +82,7 @@ class WebhookController
      */
     private function __resend($id)
     {
-        $url = config('chargify.api_domain') . "webhooks/replay.json";
+        $url = $this->apiDomain . "webhooks/replay.json";
         if (!is_array($id)) {
             $id = array($id);
         }

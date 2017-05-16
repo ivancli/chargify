@@ -17,6 +17,17 @@ class NoteController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     public function create($subscription_id, $fields)
     {
         return $this->__create($subscription_id, $fields);
@@ -30,7 +41,7 @@ class NoteController
     public function get($subscription_id, $note_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("subscriptions.{$subscription_id}.notes.{$note_id}", config('chargify.caching.ttl'), function () use ($subscription_id, $note_id) {
+            return Cache::remember("{$this->accessPoint}.subscriptions.{$subscription_id}.notes.{$note_id}", config('chargify.caching.ttl'), function () use ($subscription_id, $note_id) {
                 return $this->___get($subscription_id, $note_id);
             });
         } else {
@@ -41,7 +52,7 @@ class NoteController
     public function allBySubscription($subscription_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("subscriptions.{$subscription_id}.notes", config('chargify.caching.ttl'), function () use ($subscription_id) {
+            return Cache::remember("{$this->accessPoint}.subscriptions.{$subscription_id}.notes", config('chargify.caching.ttl'), function () use ($subscription_id) {
                 return $this->__allBySubscription($subscription_id);
             });
         } else {
@@ -51,7 +62,7 @@ class NoteController
 
     private function __create($subscription_id, $fields)
     {
-        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}/notes.json";
+        $url = $this->apiDomain . "subscriptions/{$subscription_id}/notes.json";
         $data = array(
             "note" => $fields
         );
@@ -59,14 +70,14 @@ class NoteController
         $note = $this->_post($url, $data);
         if (isset($note->note)) {
             $note = $this->__assign($note->note);
-            Cache::forget("subscriptions.{$subscription_id}.notes");
+            Cache::forget("{$this->accessPoint}.subscriptions.{$subscription_id}.notes");
         }
         return $note;
     }
 
     private function __update($subscription_id, $note_id, $fields)
     {
-        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}/notes/{$note_id}.json";
+        $url = $this->apiDomain . "subscriptions/{$subscription_id}/notes/{$note_id}.json";
         $data = array(
             "note" => $fields
         );
@@ -74,15 +85,15 @@ class NoteController
         $note = $this->_put($url, $data);
         if (isset($note->note)) {
             $note = $this->__assign($note->note);
-            Cache::forget("subscriptions.{$subscription_id}.notes.{$note->id}");
-            Cache::forget("subscriptions.{$subscription_id}.notes");
+            Cache::forget("{$this->accessPoint}.subscriptions.{$subscription_id}.notes.{$note->id}");
+            Cache::forget("{$this->accessPoint}.subscriptions.{$subscription_id}.notes");
         }
         return $note;
     }
 
     private function ___get($subscription_id, $note_id)
     {
-        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}/notes/{$note_id}.json";
+        $url = $this->apiDomain . "subscriptions/{$subscription_id}/notes/{$note_id}.json";
         $note = $this->_get($url);
         if (isset($note->note)) {
             $note = $note->note;
@@ -95,7 +106,7 @@ class NoteController
 
     private function __allBySubscription($subscription_id)
     {
-        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}/notes.json";
+        $url = $this->apiDomain . "subscriptions/{$subscription_id}/notes.json";
         $notes = $this->_get($url);
         if (is_array($notes)) {
             $notes = array_pluck($notes, 'note');

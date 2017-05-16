@@ -17,6 +17,17 @@ class CustomerController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     public function create($fields)
     {
         return $this->__create($fields);
@@ -35,7 +46,7 @@ class CustomerController
     public function getLink($customer_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("customers.{$customer_id}.link", config('chargify.caching.ttl'), function () use($customer_id){
+            return Cache::remember("{$this->accessPoint}.customers.{$customer_id}.link", config('chargify.caching.ttl'), function () use($customer_id){
                 return $this->__getLink($customer_id);
             });
         } else {
@@ -51,7 +62,7 @@ class CustomerController
     public function all()
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("customers", config('chargify.caching.ttl'), function () {
+            return Cache::remember("{$this->accessPoint}.customers", config('chargify.caching.ttl'), function () {
                 return $this->__all();
             });
         } else {
@@ -62,7 +73,7 @@ class CustomerController
     public function get($customer_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("customers.{$customer_id}", config('chargify.caching.ttl'), function () use ($customer_id) {
+            return Cache::remember("{$this->accessPoint}.customers.{$customer_id}", config('chargify.caching.ttl'), function () use ($customer_id) {
                 return $this->___get($customer_id);
             });
         } else {
@@ -82,7 +93,7 @@ class CustomerController
 
     private function __create($fields)
     {
-        $url = config('chargify.api_domain') . "customers.json";
+        $url = $this->apiDomain . "customers.json";
         $data = array(
             "customer" => $fields
         );
@@ -96,7 +107,7 @@ class CustomerController
 
     private function __update($customer_id, $fields)
     {
-        $url = config('chargify.api_domain') . "customers/{$customer_id}.json";
+        $url = $this->apiDomain . "customers/{$customer_id}.json";
         $data = array(
             "customer" => $fields
         );
@@ -104,32 +115,32 @@ class CustomerController
         $customer = $this->_put($url, $data);
         if (isset($customer->customer)) {
             $customer = $this->__assign($customer->customer);
-            Cache::forget("customers.{$customer_id}.link");
+            Cache::forget("{$this->accessPoint}.customers.{$customer_id}.link");
         }
         return $customer;
     }
 
     private function __delete($customer_id)
     {
-        $url = config('chargify.api_domain') . "customers/{$customer_id}.json";
+        $url = $this->apiDomain . "customers/{$customer_id}.json";
         $customer = $this->_delete($url);
         if (is_null($customer)) {
             $customer = true;
-            Cache::forget("customers.{$customer_id}.link");
+            Cache::forget("{$this->accessPoint}.customers.{$customer_id}.link");
         }
         return $customer;
     }
 
     private function __getLink($customer_id)
     {
-        $url = config('chargify.api_domain') . "portal/customers/{$customer_id}/management_link.json";
+        $url = $this->apiDomain . "portal/customers/{$customer_id}/management_link.json";
         $billingPortal = $this->_get($url);
         return $billingPortal;
     }
 
     private function __enableBillingPortal($customer_id, $auto_invite)
     {
-        $url = config('chargify.api_domain') . "portal/customers/{$customer_id}/enable.json";
+        $url = $this->apiDomain . "portal/customers/{$customer_id}/enable.json";
         if ($auto_invite == true) {
             $url .= "?auto_invite=1";
         }
@@ -142,7 +153,7 @@ class CustomerController
 
     private function __all()
     {
-        $url = config('chargify.api_domain') . "customers.json";
+        $url = $this->apiDomain . "customers.json";
         $customers = $this->_get($url);
         if (is_array($customers)) {
             $customers = array_pluck($customers, 'customer');
@@ -158,7 +169,7 @@ class CustomerController
 
     private function ___get($customer_id)
     {
-        $url = config('chargify.api_domain') . "customers/{$customer_id}.json";
+        $url = $this->apiDomain . "customers/{$customer_id}.json";
         $customer = $this->_get($url);
         if (!is_null($customer)) {
             $customer = $customer->customer;
@@ -172,7 +183,7 @@ class CustomerController
     private function __getByReference($reference)
     {
         $reference = urlencode($reference);
-        $url = config('chargify.api_domain') . "customers/lookup.json?reference={$reference}";
+        $url = $this->apiDomain . "customers/lookup.json?reference={$reference}";
         $customer = $this->_get($url);
         if (!is_null($customer)) {
             $customer = $customer->customer;
@@ -186,7 +197,7 @@ class CustomerController
     private function __getByQuery($query)
     {
         $query = urlencode($query);
-        $url = config('chargify.api_domain') . "customers.json?q={$query}";
+        $url = $this->apiDomain . "customers.json?q={$query}";
         $customers = $this->_get($url);
         if (is_array($customers)) {
             $customers = array_pluck($customers, 'customer');

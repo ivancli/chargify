@@ -21,6 +21,17 @@ class InvoiceController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     /**
      * Load all invoices
      *
@@ -46,7 +57,7 @@ class InvoiceController
     public function get($invoice_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("invoices.{$invoice_id}", config('chargify.caching.ttl'), function () use($invoice_id){
+            return Cache::remember("{$this->accessPoint}.invoices.{$invoice_id}", config('chargify.caching.ttl'), function () use($invoice_id){
                 return $this->___get($invoice_id);
             });
         } else {
@@ -60,7 +71,7 @@ class InvoiceController
      */
     private function __all($queryString = null)
     {
-        $url = config('chargify.api_domain') . "invoices.json";
+        $url = $this->apiDomain . "invoices.json";
         if (!is_null($queryString)) {
             $url .= "?" . $queryString;
         }
@@ -83,7 +94,7 @@ class InvoiceController
      */
     private function ___get($invoice_id)
     {
-        $url = config('chargify.api_domain') . "invoices/{$invoice_id}.json";
+        $url = $this->apiDomain . "invoices/{$invoice_id}.json";
         $invoice = $this->_get($url);
         if (isset($invoice->invoice)) {
             $invoice = $invoice->invoice;

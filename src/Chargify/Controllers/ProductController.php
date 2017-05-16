@@ -17,6 +17,17 @@ class ProductController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     /**
      * Create a product
      *
@@ -49,7 +60,7 @@ class ProductController
     public function all()
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("products", config('chargify.caching.ttl'), function () {
+            return Cache::remember("{$this->accessPoint}.products", config('chargify.caching.ttl'), function () {
                 return $this->__all();
             });
         } else {
@@ -66,7 +77,7 @@ class ProductController
     public function get($product_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("products.{$product_id}", config('chargify.caching.ttl'), function () use ($product_id) {
+            return Cache::remember("{$this->accessPoint}.products.{$product_id}", config('chargify.caching.ttl'), function () use ($product_id) {
                 return $this->___get($product_id);
             });
         } else {
@@ -83,7 +94,7 @@ class ProductController
     public function getByHandle($handle)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("products.handle.{$handle}", config('chargify.caching.ttl'), function () use ($handle) {
+            return Cache::remember("{$this->accessPoint}.products.handle.{$handle}", config('chargify.caching.ttl'), function () use ($handle) {
                 return $this->__getByHandle($handle);
             });
         } else {
@@ -100,7 +111,7 @@ class ProductController
     public function allByProductFamily($product_family_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("product_families.{$product_family_id}.products", config('chargify.caching.ttl'), function () use ($product_family_id) {
+            return Cache::remember("{$this->accessPoint}.product_families.{$product_family_id}.products", config('chargify.caching.ttl'), function () use ($product_family_id) {
                 return $this->__allByProductFamily($product_family_id);
             });
         } else {
@@ -115,7 +126,7 @@ class ProductController
      */
     private function __create($product_family_id, $fields)
     {
-        $url = config('chargify.api_domain') . "product_families/{$product_family_id}/products.json";
+        $url = $this->apiDomain . "product_families/{$product_family_id}/products.json";
         $data = array(
             "product" => $fields
         );
@@ -123,8 +134,8 @@ class ProductController
         $product = $this->_post($url, $data);
         if (isset($product->product)) {
             $output = $this->__assign($product->product);
-            Cache::forget("products");
-            Cache::forget("product_families.{$product_family_id}.products");
+            Cache::forget("{$this->accessPoint}.products");
+            Cache::forget("{$this->accessPoint}.product_families.{$product_family_id}.products");
             return $output;
         } else {
             return $product;
@@ -138,7 +149,7 @@ class ProductController
      */
     private function __update($product_id, $fields)
     {
-        $url = config('chargify.api_domain') . "products/{$product_id}.json";
+        $url = $this->apiDomain . "products/{$product_id}.json";
         $data = array(
             "product" => $fields
         );
@@ -146,9 +157,9 @@ class ProductController
         $product = $this->_put($url, $data);
         if (isset($product->product)) {
             $output = $this->__assign($product->product);
-            Cache::forget("products");
-            Cache::forget("products.{$product_id}");
-            Cache::forget("product_families.{$output->product_family_id}.products");
+            Cache::forget("{$this->accessPoint}.products");
+            Cache::forget("{$this->accessPoint}.products.{$product_id}");
+            Cache::forget("{$this->accessPoint}.product_families.{$output->product_family_id}.products");
             return $output;
         } else {
             return $product;
@@ -160,7 +171,7 @@ class ProductController
      */
     private function __all()
     {
-        $url = config('chargify.api_domain') . "products.json";
+        $url = $this->apiDomain . "products.json";
         $products = $this->_get($url);
         if (is_array($products)) {
             $products = array_pluck($products, 'product');
@@ -180,7 +191,7 @@ class ProductController
      */
     private function ___get($product_id)
     {
-        $url = config('chargify.api_domain') . "products/{$product_id}.json";
+        $url = $this->apiDomain . "products/{$product_id}.json";
         $product = $this->_get($url);
         if (!is_null($product)) {
             $product = $product->product;
@@ -197,7 +208,7 @@ class ProductController
      */
     private function __getByHandle($handle)
     {
-        $url = config('chargify.api_domain') . "products/handle/{$handle}.json";
+        $url = $this->apiDomain . "products/handle/{$handle}.json";
         $product = $this->_get($url);
         if (!is_null($product)) {
             $product = $product->product;
@@ -214,7 +225,7 @@ class ProductController
      */
     private function __allByProductFamily($product_family_id)
     {
-        $url = config('chargify.api_domain') . "product_families/{$product_family_id}/products.json";
+        $url = $this->apiDomain . "product_families/{$product_family_id}/products.json";
         $products = $this->_get($url);
         if (is_array($products)) {
             $products = array_pluck($products, 'product');

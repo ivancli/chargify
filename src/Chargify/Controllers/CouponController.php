@@ -17,6 +17,17 @@ class CouponController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     /**
      * Create a new coupon
      *
@@ -60,7 +71,7 @@ class CouponController
     public function get($coupon_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("coupons.{$coupon_id}", config('chargify.caching.ttl'), function () use ($coupon_id) {
+            return Cache::remember("{$this->accessPoint}.coupons.{$coupon_id}", config('chargify.caching.ttl'), function () use ($coupon_id) {
                 return $this->__get($coupon_id);
             });
         } else {
@@ -79,9 +90,9 @@ class CouponController
     {
         if (config('chargify.caching.enable') == true) {
             if (!is_null($product_family_id)) {
-                $key = "product_families.{$product_family_id}.coupons.coupon_code.{$coupon_code}";
+                $key = "{$this->accessPoint}.product_families.{$product_family_id}.coupons.coupon_code.{$coupon_code}";
             } else {
-                $key = "coupons.coupon_code.{$coupon_code}";
+                $key = "{$this->accessPoint}.coupons.coupon_code.{$coupon_code}";
             }
             return Cache::remember($key, config('chargify.caching.ttl'), function () use ($coupon_code, $product_family_id) {
                 return $this->__find($coupon_code, $product_family_id);
@@ -168,7 +179,7 @@ class CouponController
      */
     private function __create($fields)
     {
-        $url = config('chargify.api_domain') . "coupons.json";
+        $url = $this->apiDomain . "coupons.json";
         $data = array(
             "coupon" => $fields
         );
@@ -187,7 +198,7 @@ class CouponController
      */
     private function __update($coupon_id, $fields)
     {
-        $url = config('chargify.api_domain') . "coupons/{$coupon_id}.json";
+        $url = $this->apiDomain . "coupons/{$coupon_id}.json";
         $data = array(
             "coupon" => $fields
         );
@@ -195,7 +206,7 @@ class CouponController
         $coupon = $this->_put($url, $data);
         if (isset($coupon->coupon)) {
             $coupon = $this->__assign($coupon->coupon);
-            Cache::forget("coupons.{$coupon_id}");
+            Cache::forget("{$this->accessPoint}.coupons.{$coupon_id}");
         }
         return $coupon;
     }
@@ -207,11 +218,11 @@ class CouponController
     private function __archive($coupon_id)
     {
         $coupon = $this->___get($coupon_id);
-        $url = config('chargify.api_domain') . "coupons/{$coupon_id}.json";
+        $url = $this->apiDomain . "coupons/{$coupon_id}.json";
         $result = $this->_delete($url);
         if (is_null($result)) {
             $result = true;
-            Cache::forget("coupons.{$coupon_id}");
+            Cache::forget("{$this->accessPoint}.coupons.{$coupon_id}");
         }
         return $result;
     }
@@ -222,7 +233,7 @@ class CouponController
      */
     private function ___get($coupon_id)
     {
-        $url = config('chargify.api_domain') . "coupons/{$coupon_id}.json";
+        $url = $this->apiDomain . "coupons/{$coupon_id}.json";
         $coupon = $this->_get($url);
         if (isset($coupon->coupon)) {
             $coupon = $coupon->coupon;
@@ -238,7 +249,7 @@ class CouponController
      */
     private function __find($coupon_code, $product_family_id = null)
     {
-        $url = config('chargify.api_domain') . "coupons/find.json?code={$coupon_code}";
+        $url = $this->apiDomain . "coupons/find.json?code={$coupon_code}";
         if (!is_null($product_family_id)) {
             $url .= "&product_family_id={$product_family_id}";
         }
@@ -256,7 +267,7 @@ class CouponController
      */
     private function __getUsage($coupon_id)
     {
-        $url = config('chargify.api_domain') . "coupons/{$coupon_id}/usage.json";
+        $url = $this->apiDomain . "coupons/{$coupon_id}/usage.json";
         $usage = $this->_get($url);
         return $usage;
     }
@@ -267,7 +278,7 @@ class CouponController
      */
     private function __validate($coupon_code)
     {
-        $url = config('chargify.api_domain') . "coupons/validate.json?code={$coupon_code}";
+        $url = $this->apiDomain . "coupons/validate.json?code={$coupon_code}";
         $coupon = $this->_get($url);
         if (isset($coupon->coupon)) {
             $coupon = $coupon->coupon;
@@ -284,7 +295,7 @@ class CouponController
      */
     private function __allSubcodes($coupon_id, $page, $per_page)
     {
-        $url = config('chargify.api_domain') . "coupons/{$coupon_id}/codes.json";
+        $url = $this->apiDomain . "coupons/{$coupon_id}/codes.json";
         if (!is_null($page) && !is_null($per_page)) {
             $url .= "?page={$page}&per_page={$per_page}";
         }
@@ -299,7 +310,7 @@ class CouponController
      */
     private function __createSubcodes($coupon_id, $fields)
     {
-        $url = config('chargify.api_domain') . "coupons/$coupon_id/codes.json";
+        $url = $this->apiDomain . "coupons/$coupon_id/codes.json";
         $data = array(
             "codes" => $fields
         );
@@ -315,7 +326,7 @@ class CouponController
      */
     private function __updateSubcodes($coupon_id, $fields)
     {
-        $url = config('chargify.api_domain') . "coupons/{$coupon_id}/codes.json";
+        $url = $this->apiDomain . "coupons/{$coupon_id}/codes.json";
         $data = array(
             "codes" => $fields
         );
@@ -334,7 +345,7 @@ class CouponController
      */
     private function __deleteSubcode($coupon_id, $coupon_subcode)
     {
-        $url = config('chargify.api_domain') . "coupons/{$coupon_id}/{$coupon_subcode}.json";
+        $url = $this->apiDomain . "coupons/{$coupon_id}/{$coupon_subcode}.json";
         $coupon = $this->_delete($url);
         if (is_null($coupon)) {
             $coupon = true;

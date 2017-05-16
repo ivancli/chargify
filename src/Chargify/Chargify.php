@@ -34,88 +34,88 @@ class Chargify
         $this->app = $app;
     }
 
-    public static function adjustment()
+    public static function adjustment($accessPoint = 'au')
     {
-        return new AdjustmentController();
+        return new AdjustmentController($accessPoint);
     }
 
-    public static function allocation()
+    public static function allocation($accessPoint = 'au')
     {
-        return new AllocationController();
+        return new AllocationController($accessPoint);
     }
 
-    public static function charge()
+    public static function charge($accessPoint = 'au')
     {
-        return new ChargeController();
+        return new ChargeController($accessPoint);
     }
 
-    public static function component()
+    public static function component($accessPoint = 'au')
     {
-        return new ComponentController();
+        return new ComponentController($accessPoint);
     }
 
-    public static function coupon()
+    public static function coupon($accessPoint = 'au')
     {
-        return new CouponController();
+        return new CouponController($accessPoint);
     }
 
-    public static function customer()
+    public static function customer($accessPoint = 'au')
     {
-        return new CustomerController();
+        return new CustomerController($accessPoint);
     }
 
-    public static function invoice()
+    public static function invoice($accessPoint = 'au')
     {
-        return new InvoiceController();
+        return new InvoiceController($accessPoint);
     }
 
-    public static function note()
+    public static function note($accessPoint = 'au')
     {
-        return new NoteController();
+        return new NoteController($accessPoint);
     }
 
-    public static function payment()
+    public static function payment($accessPoint = 'au')
     {
-        return new PaymentController();
+        return new PaymentController($accessPoint);
     }
 
-    public static function paymentProfile()
+    public static function paymentProfile($accessPoint = 'au')
     {
-        return new PaymentProfileController();
+        return new PaymentProfileController($accessPoint);
     }
 
-    public static function product()
+    public static function product($accessPoint = 'au')
     {
-        return new ProductController();
+        return new ProductController($accessPoint);
     }
 
-    public static function productFamily()
+    public static function productFamily($accessPoint = 'au')
     {
-        return new ProductFamilyController();
+        return new ProductFamilyController($accessPoint);
     }
 
-    public static function site()
+    public static function site($accessPoint = 'au')
     {
-        return new SiteController();
+        return new SiteController($accessPoint);
     }
 
-    public static function statement()
+    public static function statement($accessPoint = 'au')
     {
-        return new StatementController();
+        return new StatementController($accessPoint);
     }
 
-    public static function subscription()
+    public static function subscription($accessPoint = 'au')
     {
-        return new SubscriptionController();
+        return new SubscriptionController($accessPoint);
     }
 
-    public static function transaction()
+    public static function transaction($accessPoint = 'au')
     {
-        return new TransactionController();
+        return new TransactionController($accessPoint);
     }
 
-    public static function webhook()
+    public static function webhook($accessPoint = 'au')
     {
-        return new WebhookController();
+        return new WebhookController($accessPoint);
     }
 }

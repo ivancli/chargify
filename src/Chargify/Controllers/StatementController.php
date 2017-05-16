@@ -20,6 +20,17 @@ class StatementController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     /**
      * Get all statements of a subscription
      *
@@ -76,7 +87,7 @@ class StatementController
      */
     private function __allBySubscription($subscription_id, $page, $per_page)
     {
-        $url = config('chargify.api_domain') . "subscription_id/{$subscription_id}/statements.json";
+        $url = $this->apiDomain . "subscription_id/{$subscription_id}/statements.json";
         if (!is_null($page) && !is_null($per_page)) {
             $url .= "?page={$page}&per_page={$per_page}";
         }
@@ -100,7 +111,7 @@ class StatementController
      */
     private function __allIDsBySubscription($subscription_id, $queryString)
     {
-        $url = config('chargify.api_domain') . "subscription_id/{$subscription_id}/statements/ids.json";
+        $url = $this->apiDomain . "subscription_id/{$subscription_id}/statements/ids.json";
         if (!is_null($queryString)) {
             $url .= "?" . $queryString;
         }
@@ -115,7 +126,7 @@ class StatementController
      */
     private function __allIDs($page, $per_page)
     {
-        $url = config('chargify.api_domain') . "statements/ids.json";
+        $url = $this->apiDomain . "statements/ids.json";
         if (!is_null($page) && !is_null($per_page)) {
             $url .= "?page={$page}&per_page={$per_page}";
         }
@@ -129,7 +140,7 @@ class StatementController
      */
     private function ___get($statement_id)
     {
-        $url = config('chargify.api_domain') . "statements/{$statement_id}.json";
+        $url = $this->apiDomain . "statements/{$statement_id}.json";
         $statement = $this->_get($url);
         if (isset($statement->statement)) {
             $statement = $statement->statement;

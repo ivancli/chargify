@@ -23,6 +23,17 @@ class SiteController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     /**
      * Get statistics of the site
      * Please check
@@ -50,7 +61,7 @@ class SiteController
 
     private function __stats()
     {
-        $url = config('chargify.api_domain') . "stats.json";
+        $url = $this->apiDomain . "stats.json";
         $stats = $this->_get($url);
         return $stats;
     }
@@ -61,7 +72,7 @@ class SiteController
      */
     private function __cleanup($scope)
     {
-        $url = config('chargify.api_domain') . "site/clear_data.json";
+        $url = $this->apiDomain . "site/clear_data.json";
         if (!is_null($scope)) {
             $url .= "?cleanup_scope={$scope}";
         }

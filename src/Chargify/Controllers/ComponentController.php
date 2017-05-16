@@ -16,6 +16,17 @@ class ComponentController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     /**
      * Create a component within a product family
      *
@@ -42,7 +53,7 @@ class ComponentController
     public function allByProductFamily($product_family_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("product_families.{$product_family_id}.components", config('chargify.caching.ttl'), function () use ($product_family_id) {
+            return Cache::remember("{$this->accessPoint}.product_families.{$product_family_id}.components", config('chargify.caching.ttl'), function () use ($product_family_id) {
                 return $this->__allByProductFamily($product_family_id);
             });
         } else {
@@ -59,7 +70,7 @@ class ComponentController
     public function allBySubscription($subscription_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("subscriptions.{$subscription_id}.components", config('chargify.caching.ttl'), function () use ($subscription_id) {
+            return Cache::remember("{$this->accessPoint}.subscriptions.{$subscription_id}.components", config('chargify.caching.ttl'), function () use ($subscription_id) {
                 return $this->__allBySubscription($subscription_id);
             });
         } else {
@@ -77,7 +88,7 @@ class ComponentController
     public function getByProductFamily($product_family_id, $component_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("product_families.{$product_family_id}.components.{$component_id}", config('chargify.caching.ttl'), function () use ($product_family_id, $component_id) {
+            return Cache::remember("{$this->accessPoint}.product_families.{$product_family_id}.components.{$component_id}", config('chargify.caching.ttl'), function () use ($product_family_id, $component_id) {
                 return $this->__getByProductFamily($product_family_id, $component_id);
             });
         } else {
@@ -95,7 +106,7 @@ class ComponentController
     public function getBySubscription($subscription_id, $component_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("subscriptions.{$subscription_id}.components.{$component_id}", config('chargify.caching.ttl'), function () use ($subscription_id, $component_id) {
+            return Cache::remember("{$this->accessPoint}.subscriptions.{$subscription_id}.components.{$component_id}", config('chargify.caching.ttl'), function () use ($subscription_id, $component_id) {
                 return $this->__getBySubscription($subscription_id, $component_id);
             });
         } else {
@@ -112,7 +123,7 @@ class ComponentController
     private function __create($product_family_id, $plural_kind, $fields)
     {
         $url_plural_kind = str_plural($plural_kind);
-        $url = config('chargify.api_domain') . "product_families/{$product_family_id}/{$url_plural_kind}.json";
+        $url = $this->apiDomain . "product_families/{$product_family_id}/{$url_plural_kind}.json";
         $data = array(
             $plural_kind => $fields
         );
@@ -120,7 +131,7 @@ class ComponentController
         $component = $this->_post($url, $data);
         if (isset($component->$plural_kind)) {
             $output = $this->__assign($component->$plural_kind);
-            Cache::forget("product_families.{$product_family_id}.components");
+            Cache::forget("{$this->accessPoint}.product_families.{$product_family_id}.components");
             return $output;
         } else {
             return $component;
@@ -133,7 +144,7 @@ class ComponentController
      */
     private function __allByProductFamily($product_family_id)
     {
-        $url = config('chargify.api_domain') . "product_families/{$product_family_id}/components.json";
+        $url = $this->apiDomain . "product_families/{$product_family_id}/components.json";
         $components = $this->_get($url);
         if (is_array($components)) {
             $components = array_pluck($components, 'component');
@@ -149,7 +160,7 @@ class ComponentController
 
     private function __allBySubscription($subscription_id)
     {
-        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}/components.json";
+        $url = $this->apiDomain . "subscriptions/{$subscription_id}/components.json";
         $components = $this->_get($url);
         if (is_array($components)) {
             $components = array_pluck($components, 'component');
@@ -165,7 +176,7 @@ class ComponentController
 
     private function __getByProductFamily($product_family_id, $component_id)
     {
-        $url = config('chargify.api_domain') . "product_families/{$product_family_id}/components/{$component_id}.json";
+        $url = $this->apiDomain . "product_families/{$product_family_id}/components/{$component_id}.json";
         $component = $this->_get($url);
         if (!is_null($component)) {
             $component = $component->component;
@@ -178,7 +189,7 @@ class ComponentController
 
     private function __getBySubscription($subscription_id, $component_id)
     {
-        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}/components/{$component_id}.json";
+        $url = $this->apiDomain . "subscriptions/{$subscription_id}/components/{$component_id}.json";
         $component = $this->_get($url);
         if (!is_null($component)) {
             $component = $component->component;

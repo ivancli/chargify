@@ -16,6 +16,17 @@ class ChargeController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     public function create($subscription_id, $fields)
     {
         return $this->__create($subscription_id, $fields);
@@ -28,7 +39,7 @@ class ChargeController
 
     private function __create($subscription_id, $fields)
     {
-        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}/charges.json";
+        $url = $this->apiDomain . "subscriptions/{$subscription_id}/charges.json";
         $data = array(
             "charge" => $fields
         );
@@ -42,7 +53,7 @@ class ChargeController
 
     private function __createInvoiceCharge($invoice_id, $fields)
     {
-        $url = config('chargify.api_domain') . "invoices/{$invoice_id}/charges.json";
+        $url = $this->apiDomain . "invoices/{$invoice_id}/charges.json";
         $data = array(
             "charge" => $fields
         );

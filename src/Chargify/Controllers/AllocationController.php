@@ -16,6 +16,17 @@ class AllocationController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     /**
      * Create an allocation
      *
@@ -62,7 +73,7 @@ class AllocationController
      */
     private function __create($subscription_id, $component_id, $fields)
     {
-        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}/components/{$component_id}/allocations.json";
+        $url = $this->apiDomain . "subscriptions/{$subscription_id}/components/{$component_id}/allocations.json";
         $data = array(
             "allocation" => $fields
         );
@@ -83,7 +94,7 @@ class AllocationController
      */
     private function __createMultiple($subscription_id, $fields)
     {
-        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}/allocations.json";
+        $url = $this->apiDomain . "subscriptions/{$subscription_id}/allocations.json";
         $data = $fields;
         $data = json_decode(json_encode($data), false);
         $allocations = $this->_post($url, $data);
@@ -107,7 +118,7 @@ class AllocationController
      */
     private function __allByComponent($subscription_id, $component_id, $page = null)
     {
-        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}/components/{$component_id}/allocations.json";
+        $url = $this->apiDomain . "subscriptions/{$subscription_id}/components/{$component_id}/allocations.json";
         $allocations = $this->_get($url);
         if (is_array($allocations)) {
             $allocations = array_pluck($allocations, 'allocation');

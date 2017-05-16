@@ -16,6 +16,17 @@ class TransactionController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     public function all()
     {
         return $this->__all();
@@ -33,7 +44,7 @@ class TransactionController
 
     private function __all()
     {
-        $url = config('chargify.api_domain') . "transactions.json";
+        $url = $this->apiDomain . "transactions.json";
         $transactions = $this->_get($url);
         if (is_array($transactions)) {
             $transactions = array_pluck($transactions, 'transaction');
@@ -49,7 +60,7 @@ class TransactionController
 
     private function ___get($transaction_id)
     {
-        $url = config('chargify.api_domain') . "transactions/{$transaction_id}.json";
+        $url = $this->apiDomain . "transactions/{$transaction_id}.json";
         $transaction = $this->_get($url);
         if (isset($transaction->transaction)) {
             $transaction = $transaction->transaction;
@@ -60,7 +71,7 @@ class TransactionController
 
     private function __allBySubscription($subscription_id, $queryString)
     {
-        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}/transactions.json";
+        $url = $this->apiDomain . "subscriptions/{$subscription_id}/transactions.json";
         if (!is_null($queryString)) {
             $url .= "?" . $queryString;
         }

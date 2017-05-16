@@ -17,6 +17,17 @@ class PaymentProfileController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     public function create($fields)
     {
         return $this->__create($fields);
@@ -36,7 +47,7 @@ class PaymentProfileController
     public function get($payment_profile_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("payment_profiles.{$payment_profile_id}", config('chargify.caching.ttl'), function () use ($payment_profile_id) {
+            return Cache::remember("{$this->accessPoint}.payment_profiles.{$payment_profile_id}", config('chargify.caching.ttl'), function () use ($payment_profile_id) {
                 return $this->___get($payment_profile_id);
             });
         } else {
@@ -46,7 +57,7 @@ class PaymentProfileController
 
     private function __create($fields)
     {
-        $url = config('chargify.api_domain') . "payment_profiles.json";
+        $url = $this->apiDomain . "payment_profiles.json";
         $data = array(
             "payment_profile" => $fields
         );
@@ -60,7 +71,7 @@ class PaymentProfileController
 
     private function __update($payment_profile_id, $fields)
     {
-        $url = config('chargify.api_domain') . "payment_profiles/{$payment_profile_id}.json";
+        $url = $this->apiDomain . "payment_profiles/{$payment_profile_id}.json";
         $data = array(
             "payment_profile" => $fields
         );
@@ -68,7 +79,7 @@ class PaymentProfileController
         $paymentProfile = $this->_put($url, $data);
         if (isset($paymentProfile->payment_profile)) {
             $paymentProfile = $this->__assign($paymentProfile->payment_profile);
-            Cache::forget("payment_profiles.{$payment_profile_id}");
+            Cache::forget("{$this->accessPoint}.payment_profiles.{$payment_profile_id}");
         }
         return $paymentProfile;
     }
@@ -79,7 +90,7 @@ class PaymentProfileController
      */
     private function ___get($payment_profile_id)
     {
-        $url = config('chargify.api_domain') . "payment_profiles/{$payment_profile_id}.json";
+        $url = $this->apiDomain . "payment_profiles/{$payment_profile_id}.json";
         $paymentProfile = $this->_get($url);
         if (isset($paymentProfile->payment_profile)) {
             $paymentProfile = $paymentProfile->payment_profile;

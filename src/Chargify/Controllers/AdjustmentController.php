@@ -16,6 +16,17 @@ class AdjustmentController
 {
     use Curl;
 
+    protected $accessPoint;
+
+    protected $apiDomain;
+
+    public function __construct($accessPoint)
+    {
+        $this->accessPoint = $accessPoint;
+
+        $this->apiDomain = config("chargify.{$this->accessPoint}.api_domain");
+    }
+
     /**
      * Create adjustment
      *
@@ -35,7 +46,7 @@ class AdjustmentController
      */
     private function __create($subscription_id, $fields)
     {
-        $url = config('chargify.api_domain') . "subscriptions/{$subscription_id}/adjustments.json";
+        $url = $this->apiDomain . "subscriptions/{$subscription_id}/adjustments.json";
         $data = array(
             "adjustment" => $fields
         );
