@@ -67,7 +67,7 @@ class NoteController
             "note" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $note = $this->_post($url, $data);
+        $note = $this->_post($this->accessPoint, $url, $data);
         if (isset($note->note)) {
             $note = $this->__assign($note->note);
             Cache::forget("{$this->accessPoint}.subscriptions.{$subscription_id}.notes");
@@ -82,7 +82,7 @@ class NoteController
             "note" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $note = $this->_put($url, $data);
+        $note = $this->_put($this->accessPoint, $url, $data);
         if (isset($note->note)) {
             $note = $this->__assign($note->note);
             Cache::forget("{$this->accessPoint}.subscriptions.{$subscription_id}.notes.{$note->id}");
@@ -94,7 +94,7 @@ class NoteController
     private function ___get($subscription_id, $note_id)
     {
         $url = $this->apiDomain . "subscriptions/{$subscription_id}/notes/{$note_id}.json";
-        $note = $this->_get($url);
+        $note = $this->_get($this->accessPoint, $url);
         if (isset($note->note)) {
             $note = $note->note;
             $output = $this->__assign($note);
@@ -107,7 +107,7 @@ class NoteController
     private function __allBySubscription($subscription_id)
     {
         $url = $this->apiDomain . "subscriptions/{$subscription_id}/notes.json";
-        $notes = $this->_get($url);
+        $notes = $this->_get($this->accessPoint, $url);
         if (is_array($notes)) {
             $notes = array_pluck($notes, 'note');
             $output = array();

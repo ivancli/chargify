@@ -44,7 +44,7 @@ class PaymentController
             "payment" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $payment = $this->_post($url, $data);
+        $payment = $this->_post($this->accessPoint, $url, $data);
         if (isset($payment->payment)) {
             $payment = $this->__assign($payment->payment);
         }
@@ -58,7 +58,7 @@ class PaymentController
             "payment" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $payment = $this->_post($url, $data);
+        $payment = $this->_post($this->accessPoint, $url, $data);
         if (isset($payment->payment)) {
             $payment = $this->__assign($payment->payment);
         }

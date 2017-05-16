@@ -45,7 +45,7 @@ class TransactionController
     private function __all()
     {
         $url = $this->apiDomain . "transactions.json";
-        $transactions = $this->_get($url);
+        $transactions = $this->_get($this->accessPoint, $url);
         if (is_array($transactions)) {
             $transactions = array_pluck($transactions, 'transaction');
             $output = array();
@@ -61,7 +61,7 @@ class TransactionController
     private function ___get($transaction_id)
     {
         $url = $this->apiDomain . "transactions/{$transaction_id}.json";
-        $transaction = $this->_get($url);
+        $transaction = $this->_get($this->accessPoint, $url);
         if (isset($transaction->transaction)) {
             $transaction = $transaction->transaction;
             $transaction = $this->__assign($transaction);
@@ -75,7 +75,7 @@ class TransactionController
         if (!is_null($queryString)) {
             $url .= "?" . $queryString;
         }
-        $transactions = $this->_get($url);
+        $transactions = $this->_get($this->accessPoint, $url);
         if (is_array($transactions)) {
             $transactions = array_pluck($transactions, 'transaction');
             $output = array();

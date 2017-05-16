@@ -51,7 +51,7 @@ class AdjustmentController
             "adjustment" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $adjustment = $this->_post($url, $data);
+        $adjustment = $this->_post($this->accessPoint, $url, $data);
         if (isset($adjustment->adjustment)) {
             $adjustment = $this->__assign($adjustment->adjustment);
         }

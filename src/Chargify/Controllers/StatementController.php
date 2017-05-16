@@ -91,7 +91,7 @@ class StatementController
         if (!is_null($page) && !is_null($per_page)) {
             $url .= "?page={$page}&per_page={$per_page}";
         }
-        $statements = $this->_get($url);
+        $statements = $this->_get($this->accessPoint, $url);
         if (is_array($statements)) {
             $statements = array_pluck($statements, 'statement');
             $output = array();
@@ -115,7 +115,7 @@ class StatementController
         if (!is_null($queryString)) {
             $url .= "?" . $queryString;
         }
-        $statementIds = $this->_get($url);
+        $statementIds = $this->_get($this->accessPoint, $url);
         return $statementIds;
     }
 
@@ -130,7 +130,7 @@ class StatementController
         if (!is_null($page) && !is_null($per_page)) {
             $url .= "?page={$page}&per_page={$per_page}";
         }
-        $statementIds = $this->_get($url);
+        $statementIds = $this->_get($this->accessPoint, $url);
         return $statementIds;
     }
 
@@ -141,7 +141,7 @@ class StatementController
     private function ___get($statement_id)
     {
         $url = $this->apiDomain . "statements/{$statement_id}.json";
-        $statement = $this->_get($url);
+        $statement = $this->_get($this->accessPoint, $url);
         if (isset($statement->statement)) {
             $statement = $statement->statement;
             $output = $this->__assign($statement);

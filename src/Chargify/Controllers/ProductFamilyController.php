@@ -78,7 +78,7 @@ class ProductFamilyController
             "product_family" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $productFamily = $this->_post($url, $data);
+        $productFamily = $this->_post($this->accessPoint, $url, $data);
         if (isset($productFamily->product_family)) {
             $productFamily = $this->__assign($productFamily->product_family);
             Cache::forget("{$this->accessPoint}.product_families");
@@ -90,7 +90,7 @@ class ProductFamilyController
     {
         //https://<subdomain>.chargify.com/product_families/<product_family_id>/coupons/<coupon_id>.<format>
         $url = $this->apiDomain . "product_families/{$product_family_id}/coupons/{$coupon_id}.json";
-        $coupon = $this->_delete($url);
+        $coupon = $this->_delete($this->accessPoint, $url);
         if (isset($coupon->coupon)) {
             $coupon = true;
             Cache::forget("{$this->accessPoint}.coupons.{$coupon_id}");
@@ -106,7 +106,7 @@ class ProductFamilyController
     private function __all()
     {
         $url = $this->apiDomain . "product_families.json";
-        $productFamilies = $this->_get($url);
+        $productFamilies = $this->_get($this->accessPoint, $url);
         if (is_array($productFamilies)) {
             $productFamilies = array_pluck($productFamilies, 'product_family');
             $output = array();
@@ -126,7 +126,7 @@ class ProductFamilyController
     private function ___get($product_family_id)
     {
         $url = $this->apiDomain . "product_families/{$product_family_id}.json";
-        $productFamily = $this->_get($url);
+        $productFamily = $this->_get($this->accessPoint, $url);
         if (!is_null($productFamily)) {
             $productFamily = $productFamily->product_family;
             $output = $this->__assign($productFamily);

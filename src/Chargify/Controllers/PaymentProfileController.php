@@ -62,7 +62,7 @@ class PaymentProfileController
             "payment_profile" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $paymentProfile = $this->_post($url, $data);
+        $paymentProfile = $this->_post($this->accessPoint, $url, $data);
         if (isset($paymentProfile->payment_profile)) {
             $paymentProfile = $this->__assign($paymentProfile->payment_profile);
         }
@@ -76,7 +76,7 @@ class PaymentProfileController
             "payment_profile" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $paymentProfile = $this->_put($url, $data);
+        $paymentProfile = $this->_put($this->accessPoint, $url, $data);
         if (isset($paymentProfile->payment_profile)) {
             $paymentProfile = $this->__assign($paymentProfile->payment_profile);
             Cache::forget("{$this->accessPoint}.payment_profiles.{$payment_profile_id}");
@@ -91,7 +91,7 @@ class PaymentProfileController
     private function ___get($payment_profile_id)
     {
         $url = $this->apiDomain . "payment_profiles/{$payment_profile_id}.json";
-        $paymentProfile = $this->_get($url);
+        $paymentProfile = $this->_get($this->accessPoint, $url);
         if (isset($paymentProfile->payment_profile)) {
             $paymentProfile = $paymentProfile->payment_profile;
             $output = $this->__assign($paymentProfile);

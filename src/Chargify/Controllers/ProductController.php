@@ -131,7 +131,7 @@ class ProductController
             "product" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $product = $this->_post($url, $data);
+        $product = $this->_post($this->accessPoint, $url, $data);
         if (isset($product->product)) {
             $output = $this->__assign($product->product);
             Cache::forget("{$this->accessPoint}.products");
@@ -154,7 +154,7 @@ class ProductController
             "product" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $product = $this->_put($url, $data);
+        $product = $this->_put($this->accessPoint, $url, $data);
         if (isset($product->product)) {
             $output = $this->__assign($product->product);
             Cache::forget("{$this->accessPoint}.products");
@@ -172,7 +172,7 @@ class ProductController
     private function __all()
     {
         $url = $this->apiDomain . "products.json";
-        $products = $this->_get($url);
+        $products = $this->_get($this->accessPoint, $url);
         if (is_array($products)) {
             $products = array_pluck($products, 'product');
             $output = array();
@@ -192,7 +192,7 @@ class ProductController
     private function ___get($product_id)
     {
         $url = $this->apiDomain . "products/{$product_id}.json";
-        $product = $this->_get($url);
+        $product = $this->_get($this->accessPoint, $url);
         if (!is_null($product)) {
             $product = $product->product;
             $output = $this->__assign($product);
@@ -209,7 +209,7 @@ class ProductController
     private function __getByHandle($handle)
     {
         $url = $this->apiDomain . "products/handle/{$handle}.json";
-        $product = $this->_get($url);
+        $product = $this->_get($this->accessPoint, $url);
         if (!is_null($product)) {
             $product = $product->product;
             $output = $this->__assign($product);
@@ -226,7 +226,7 @@ class ProductController
     private function __allByProductFamily($product_family_id)
     {
         $url = $this->apiDomain . "product_families/{$product_family_id}/products.json";
-        $products = $this->_get($url);
+        $products = $this->_get($this->accessPoint, $url);
         if (is_array($products)) {
             $products = array_pluck($products, 'product');
             $output = array();

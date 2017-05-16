@@ -62,7 +62,7 @@ class SiteController
     private function __stats()
     {
         $url = $this->apiDomain . "stats.json";
-        $stats = $this->_get($url);
+        $stats = $this->_get($this->accessPoint, $url);
         return $stats;
     }
 
@@ -76,7 +76,7 @@ class SiteController
         if (!is_null($scope)) {
             $url .= "?cleanup_scope={$scope}";
         }
-        $result = $this->_post($url);
+        $result = $this->_post($this->accessPoint, $url);
         if (!isset($result->errors)) {
             $result = true;
             /*TODO please be notice that without the use of cache tag, there is no easy way to clear all Chargify related cache in one go*/

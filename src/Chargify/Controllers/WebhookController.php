@@ -63,7 +63,7 @@ class WebhookController
         if (!is_null($queryString)) {
             $url .= "?" . $queryString;
         }
-        $webhooks = $this->_get($url);
+        $webhooks = $this->_get($this->accessPoint, $url);
         if (is_array($webhooks)) {
             $webhooks = array_pluck($webhooks, 'webhook');
             $output = array();
@@ -90,7 +90,7 @@ class WebhookController
             "ids" => $id
         );
         $data = json_decode(json_encode($data), false);
-        $result = $this->_post($url, $data);
+        $result = $this->_post($this->accessPoint, $url, $data);
         if (isset($result->status) && $result->status == "ok") {
             $result = true;
         }

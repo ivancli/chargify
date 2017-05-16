@@ -8,50 +8,50 @@ namespace IvanCLI\Chargify\Traits;
  */
 trait Curl
 {
-    public function _get($url, $headers = array())
+    public function _get($accessPoint, $url, $headers = array())
     {
         $options = array(
             "headers" => $headers,
-            "userpass" => config('chargify.api_key') . ":" . config('chargify.api_password')
+            "userpass" => config("{$accessPoint}.chargify.api_key") . ":" . config('chargify.api_password')
         );
         $response = $this->__sendCurl($url, $options);
         return json_decode($response);
     }
 
-    public function _post($url, $data = null, $headers = array())
+    public function _post($accessPoint, $url, $data = null, $headers = array())
     {
         $options = array(
             "headers" => $headers,
             "method" => "post",
             "fields" => is_null($data) ? null : json_encode($data),
             "data_type" => "json",
-            "userpass" => config('chargify.api_key') . ":" . config('chargify.api_password')
+            "userpass" => config("{$accessPoint}.chargify.api_key") . ":" . config('chargify.api_password')
         );
         $response = $this->__sendCurl($url, $options);
         return json_decode($response);
     }
 
-    public function _put($url, $data = null, $headers = array())
+    public function _put($accessPoint, $url, $data = null, $headers = array())
     {
         $options = array(
             "headers" => $headers,
             "method" => "put",
             "fields" => is_null($data) ? null : json_encode($data),
             "data_type" => "json",
-            "userpass" => config('chargify.api_key') . ":" . config('chargify.api_password')
+            "userpass" => config("{$accessPoint}.chargify.api_key") . ":" . config('chargify.api_password')
         );
         $response = $this->__sendCurl($url, $options);
         return json_decode($response);
     }
 
-    public function _delete($url, $data = null, $headers = array())
+    public function _delete($accessPoint, $url, $data = null, $headers = array())
     {
         $options = array(
             "headers" => $headers,
             "method" => "delete",
             "fields" => is_null($data) ? null : json_encode($data),
             "data_type" => "json",
-            "userpass" => config('chargify.api_key') . ":" . config('chargify.api_password'),
+            "userpass" => config("{$accessPoint}.chargify.api_key") . ":" . config('chargify.api_password'),
             "show_header" => 1
         );
         $response = $this->__sendCurl($url, $options);

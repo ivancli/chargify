@@ -128,7 +128,7 @@ class ComponentController
             $plural_kind => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $component = $this->_post($url, $data);
+        $component = $this->_post($this->accessPoint, $url, $data);
         if (isset($component->$plural_kind)) {
             $output = $this->__assign($component->$plural_kind);
             Cache::forget("{$this->accessPoint}.product_families.{$product_family_id}.components");
@@ -145,7 +145,7 @@ class ComponentController
     private function __allByProductFamily($product_family_id)
     {
         $url = $this->apiDomain . "product_families/{$product_family_id}/components.json";
-        $components = $this->_get($url);
+        $components = $this->_get($this->accessPoint, $url);
         if (is_array($components)) {
             $components = array_pluck($components, 'component');
             $output = array();
@@ -161,7 +161,7 @@ class ComponentController
     private function __allBySubscription($subscription_id)
     {
         $url = $this->apiDomain . "subscriptions/{$subscription_id}/components.json";
-        $components = $this->_get($url);
+        $components = $this->_get($this->accessPoint, $url);
         if (is_array($components)) {
             $components = array_pluck($components, 'component');
             $output = array();
@@ -177,7 +177,7 @@ class ComponentController
     private function __getByProductFamily($product_family_id, $component_id)
     {
         $url = $this->apiDomain . "product_families/{$product_family_id}/components/{$component_id}.json";
-        $component = $this->_get($url);
+        $component = $this->_get($this->accessPoint, $url);
         if (!is_null($component)) {
             $component = $component->component;
             $output = $this->__assign($component);
@@ -190,7 +190,7 @@ class ComponentController
     private function __getBySubscription($subscription_id, $component_id)
     {
         $url = $this->apiDomain . "subscriptions/{$subscription_id}/components/{$component_id}.json";
-        $component = $this->_get($url);
+        $component = $this->_get($this->accessPoint, $url);
         if (!is_null($component)) {
             $component = $component->component;
             $output = $this->__assign($component);

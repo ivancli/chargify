@@ -75,7 +75,7 @@ class InvoiceController
         if (!is_null($queryString)) {
             $url .= "?" . $queryString;
         }
-        $invoices = $this->_get($url);
+        $invoices = $this->_get($this->accessPoint, $url);
         if (is_array($invoices)) {
             $invoices = array_pluck($invoices, 'invoice');
             $output = array();
@@ -95,7 +95,7 @@ class InvoiceController
     private function ___get($invoice_id)
     {
         $url = $this->apiDomain . "invoices/{$invoice_id}.json";
-        $invoice = $this->_get($url);
+        $invoice = $this->_get($this->accessPoint, $url);
         if (isset($invoice->invoice)) {
             $invoice = $invoice->invoice;
             $invoice = $this->__assign($invoice);

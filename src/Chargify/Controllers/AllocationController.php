@@ -78,7 +78,7 @@ class AllocationController
             "allocation" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $allocation = $this->_post($url, $data);
+        $allocation = $this->_post($this->accessPoint, $url, $data);
         if (isset($allocation->allocation)) {
             $output = $this->__assign($allocation->allocation);
             return $output;
@@ -97,7 +97,7 @@ class AllocationController
         $url = $this->apiDomain . "subscriptions/{$subscription_id}/allocations.json";
         $data = $fields;
         $data = json_decode(json_encode($data), false);
-        $allocations = $this->_post($url, $data);
+        $allocations = $this->_post($this->accessPoint, $url, $data);
         if (is_array($allocations)) {
             $allocations = array_pluck($allocations, 'allocation');
             $output = array();
@@ -119,7 +119,7 @@ class AllocationController
     private function __allByComponent($subscription_id, $component_id, $page = null)
     {
         $url = $this->apiDomain . "subscriptions/{$subscription_id}/components/{$component_id}/allocations.json";
-        $allocations = $this->_get($url);
+        $allocations = $this->_get($this->accessPoint, $url);
         if (is_array($allocations)) {
             $allocations = array_pluck($allocations, 'allocation');
             $output = array();

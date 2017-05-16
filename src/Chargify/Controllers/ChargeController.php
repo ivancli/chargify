@@ -44,7 +44,7 @@ class ChargeController
             "charge" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $charge = $this->_post($url, $data);
+        $charge = $this->_post($this->accessPoint, $url, $data);
         if (isset($charge->charge)) {
             $charge = $this->__assign($charge->charge);
         }
@@ -58,7 +58,7 @@ class ChargeController
             "charge" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $charge = $this->_post($url, $data);
+        $charge = $this->_post($this->accessPoint, $url, $data);
         if (isset($charge->charge)) {
             $charge = $this->__assign($charge->charge);
         }

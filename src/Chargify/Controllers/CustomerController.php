@@ -98,7 +98,7 @@ class CustomerController
             "customer" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $customer = $this->_post($url, $data);
+        $customer = $this->_post($this->accessPoint, $url, $data);
         if (isset($customer->customer)) {
             $customer = $this->__assign($customer->customer);
         }
@@ -112,7 +112,7 @@ class CustomerController
             "customer" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $customer = $this->_put($url, $data);
+        $customer = $this->_put($this->accessPoint, $url, $data);
         if (isset($customer->customer)) {
             $customer = $this->__assign($customer->customer);
             Cache::forget("{$this->accessPoint}.customers.{$customer_id}.link");
@@ -123,7 +123,7 @@ class CustomerController
     private function __delete($customer_id)
     {
         $url = $this->apiDomain . "customers/{$customer_id}.json";
-        $customer = $this->_delete($url);
+        $customer = $this->_delete($this->accessPoint, $url);
         if (is_null($customer)) {
             $customer = true;
             Cache::forget("{$this->accessPoint}.customers.{$customer_id}.link");
@@ -134,7 +134,7 @@ class CustomerController
     private function __getLink($customer_id)
     {
         $url = $this->apiDomain . "portal/customers/{$customer_id}/management_link.json";
-        $billingPortal = $this->_get($url);
+        $billingPortal = $this->_get($this->accessPoint, $url);
         return $billingPortal;
     }
 
@@ -144,7 +144,7 @@ class CustomerController
         if ($auto_invite == true) {
             $url .= "?auto_invite=1";
         }
-        $customer = $this->_post($url);
+        $customer = $this->_post($this->accessPoint, $url);
         if (isset($customer->customer)) {
             $customer = $this->__assign($customer->customer);
         }
@@ -154,7 +154,7 @@ class CustomerController
     private function __all()
     {
         $url = $this->apiDomain . "customers.json";
-        $customers = $this->_get($url);
+        $customers = $this->_get($this->accessPoint, $url);
         if (is_array($customers)) {
             $customers = array_pluck($customers, 'customer');
             $output = array();
@@ -170,7 +170,7 @@ class CustomerController
     private function ___get($customer_id)
     {
         $url = $this->apiDomain . "customers/{$customer_id}.json";
-        $customer = $this->_get($url);
+        $customer = $this->_get($this->accessPoint, $url);
         if (!is_null($customer)) {
             $customer = $customer->customer;
             $output = $this->__assign($customer);
@@ -184,7 +184,7 @@ class CustomerController
     {
         $reference = urlencode($reference);
         $url = $this->apiDomain . "customers/lookup.json?reference={$reference}";
-        $customer = $this->_get($url);
+        $customer = $this->_get($this->accessPoint, $url);
         if (!is_null($customer)) {
             $customer = $customer->customer;
             $output = $this->__assign($customer);
@@ -198,7 +198,7 @@ class CustomerController
     {
         $query = urlencode($query);
         $url = $this->apiDomain . "customers.json?q={$query}";
-        $customers = $this->_get($url);
+        $customers = $this->_get($this->accessPoint, $url);
         if (is_array($customers)) {
             $customers = array_pluck($customers, 'customer');
             $output = array();

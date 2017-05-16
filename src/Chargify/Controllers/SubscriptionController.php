@@ -247,7 +247,7 @@ class SubscriptionController
             "subscription" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $result = $this->_put($url, json_encode($data));
+        $result = $this->_put($this->accessPoint, $url, json_encode($data));
         Cache::forget("{$this->accessPoint}.chargify.subscriptions.{$subscription_id}");
         if(isset($result->subscription)){
             $subscription = $this->__assign($result->subscription);
@@ -267,7 +267,7 @@ class SubscriptionController
             "subscription" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $subscription = $this->_post($url, $data);
+        $subscription = $this->_post($this->accessPoint, $url, $data);
         if (isset($subscription->subscription)) {
             $subscription = $this->__assign($subscription->subscription);
             Cache::forget("{$this->accessPoint}.chargify.customers.{$subscription->customer_id}.subscriptions");
@@ -287,7 +287,7 @@ class SubscriptionController
             "migration" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $subscription = $this->_post($url, $data);
+        $subscription = $this->_post($this->accessPoint, $url, $data);
         if (isset($subscription->subscription)) {
             $subscription = $this->__assign($subscription->subscription);
             Cache::forget("{$this->accessPoint}.chargify.subscriptions.{$subscription_id}");
@@ -307,7 +307,7 @@ class SubscriptionController
             "subscription" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $subscriptionPreview = $this->_post($url, $data);
+        $subscriptionPreview = $this->_post($this->accessPoint, $url, $data);
         if (isset($subscriptionPreview->subscription_preview)) {
             $subscriptionPreview = $subscriptionPreview->subscription_preview;
         }
@@ -321,7 +321,7 @@ class SubscriptionController
     private function __previewRenew($id)
     {
         $url = $this->apiDomain . "subscriptions/{$id}/renewals/preview.json";
-        $renewalPreview = $this->_post($url);
+        $renewalPreview = $this->_post($this->accessPoint, $url);
         if (isset($renewalPreview->renewal_preview)) {
             $renewalPreview = $renewalPreview->renewal_preview;
         }
@@ -335,7 +335,7 @@ class SubscriptionController
             "migration" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $subscription = $this->_post($url, $data);
+        $subscription = $this->_post($this->accessPoint, $url, $data);
         if (isset($subscription->subscription)) {
             $subscription = $this->__assign($subscription->subscription);
             Cache::forget("{$this->accessPoint}.chargify.subscriptions.{$subscription_id}");
@@ -356,7 +356,7 @@ class SubscriptionController
             "subscription" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $subscription = $this->_put($url, $data);
+        $subscription = $this->_put($this->accessPoint, $url, $data);
         if (isset($subscription->subscription)) {
             $subscription = $this->__assign($subscription->subscription);
             Cache::forget("{$this->accessPoint}.chargify.subscriptions.{$subscription_id}");
@@ -379,7 +379,7 @@ class SubscriptionController
             )
         );
         $data = json_decode(json_encode($data), false);
-        $subscription = $this->_delete($url, json_encode($data));
+        $subscription = $this->_delete($this->accessPoint, $url, json_encode($data));
         if (isset($subscription->subscription)) {
             Cache::forget("{$this->accessPoint}.chargify.subscriptions.{$subscription_id}");
             Cache::forget("{$this->accessPoint}.chargify.customers.{$subscription->customer_id}.subscriptions");
@@ -395,7 +395,7 @@ class SubscriptionController
     private function __reactivate($subscription_id)
     {
         $url = $this->apiDomain . "subscriptions/{$subscription_id}/reactivate.json";
-        $subscription = $this->_put($url);
+        $subscription = $this->_put($this->accessPoint, $url);
         if (isset($subscription->subscription)) {
             $subscription = $this->__assign($subscription->subscription);
             Cache::forget("{$this->accessPoint}.chargify.subscriptions.{$subscription_id}");
@@ -412,7 +412,7 @@ class SubscriptionController
     private function __addCoupon($subscription_id, $coupon_code)
     {
         $url = $this->apiDomain . "subscriptions/{$subscription_id}/add_coupon.json?code={$coupon_code}";
-        $subscription = $this->_post($url);
+        $subscription = $this->_post($this->accessPoint, $url);
         if (isset($subscription->subscription)) {
             $subscription = $this->__assign($subscription->subscription);
             Cache::forget("{$this->accessPoint}.chargify.subscriptions.{$subscription_id}");
@@ -428,7 +428,7 @@ class SubscriptionController
     private function __removeCoupon($subscription_id)
     {
         $url = $this->apiDomain . "subscriptions/{$subscription_id}/remove_coupon.json";
-        $output = $this->_delete($url);
+        $output = $this->_delete($this->accessPoint, $url);
         if ($output == "Coupon removed") {
             $subscription = $this->get($subscription_id);
             Cache::forget("{$this->accessPoint}.chargify.subscriptions.{$subscription_id}");
@@ -446,7 +446,7 @@ class SubscriptionController
     private function __deletePaymentProfile($subscription_id, $payment_profile_id)
     {
         $url = $this->apiDomain . "subscriptions/{$subscription_id}/payment_profiles/{$payment_profile_id}.json";
-        $output = $this->_delete($url);
+        $output = $this->_delete($this->accessPoint, $url);
         if (!isset($output->errors)) {
             $subscription = $this->get($subscription_id);
             Cache::forget("{$this->accessPoint}.chargify.subscriptions.{$subscription_id}");
@@ -469,7 +469,7 @@ class SubscriptionController
             $page = ceil($offset / $length);
             $url .= "?per_page={$length}&page={$page}";
         }
-        $subscriptions = $this->_get($url);
+        $subscriptions = $this->_get($this->accessPoint, $url);
         if (is_array($subscriptions)) {
             $subscriptions = array_pluck($subscriptions, 'subscription');
             $output = array();
@@ -489,7 +489,7 @@ class SubscriptionController
     private function ___get($subscription_id)
     {
         $url = $this->apiDomain . "subscriptions/{$subscription_id}.json";
-        $subscription = $this->_get($url);
+        $subscription = $this->_get($this->accessPoint, $url);
         if (isset($subscription->subscription)) {
             $subscription = $subscription->subscription;
             $subscription = $this->__assign($subscription);
@@ -504,7 +504,7 @@ class SubscriptionController
     private function __allByCustomer($customer_id)
     {
         $url = $this->apiDomain . "customers/{$customer_id}/subscriptions.json";
-        $subscriptions = $this->_get($url);
+        $subscriptions = $this->_get($this->accessPoint, $url);
         if (is_array($subscriptions)) {
             $subscriptions = array_pluck($subscriptions, 'subscription');
             $output = array();
