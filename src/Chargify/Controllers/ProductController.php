@@ -245,7 +245,7 @@ class ProductController
      */
     private function __assign($input_product)
     {
-        $product = new Product($this->apiDomain);
+        $product = new Product($this->accessPoint);
         foreach ($input_product as $key => $value) {
             switch ($key) {
                 case "product_family":

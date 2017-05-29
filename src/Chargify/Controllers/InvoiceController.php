@@ -109,7 +109,7 @@ class InvoiceController
      */
     private function __assign($input_invoice)
     {
-        $invoice = new Invoice($this->apiDomain);
+        $invoice = new Invoice($this->accessPoint);
         foreach ($input_invoice as $key => $value) {
             if (property_exists($invoice, $key)) {
                 $invoice->$key = $value;

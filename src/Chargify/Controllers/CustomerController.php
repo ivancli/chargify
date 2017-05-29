@@ -213,7 +213,7 @@ class CustomerController
 
     private function __assign($input_customer)
     {
-        $customer = new Customer($this->apiDomain);
+        $customer = new Customer($this->accessPoint);
         foreach ($input_customer as $key => $value) {
             if (property_exists($customer, $key)) {
                 $customer->$key = $value;

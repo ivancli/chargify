@@ -360,7 +360,7 @@ class CouponController
      */
     private function __assign($input_coupon)
     {
-        $coupon = new Coupon($this->apiDomain);
+        $coupon = new Coupon($this->accessPoint);
         foreach ($input_coupon as $key => $value) {
             if (property_exists($coupon, $key)) {
                 $coupon->$key = $value;

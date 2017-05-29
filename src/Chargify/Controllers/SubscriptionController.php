@@ -523,7 +523,7 @@ class SubscriptionController
      */
     private function __assign($input_subscription)
     {
-        $subscription = new Subscription($this->apiDomain);
+        $subscription = new Subscription($this->accessPoint);
         foreach ($input_subscription as $key => $value) {
             switch ($key) {
                 case "customer":

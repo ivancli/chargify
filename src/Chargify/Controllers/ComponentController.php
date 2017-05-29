@@ -206,7 +206,7 @@ class ComponentController
      */
     private function __assign($input_component)
     {
-        $component = new Component($this->apiDomain);
+        $component = new Component($this->accessPoint);
         foreach ($input_component as $key => $value) {
             if (property_exists($component, $key)) {
                 $component->$key = $value;

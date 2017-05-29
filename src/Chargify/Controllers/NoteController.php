@@ -122,7 +122,7 @@ class NoteController
 
     private function __assign($input_note)
     {
-        $note = new Note($this->apiDomain);
+        $note = new Note($this->accessPoint);
         foreach ($input_note as $key => $value) {
             if (property_exists($note, $key)) {
                 $note->$key = $value;

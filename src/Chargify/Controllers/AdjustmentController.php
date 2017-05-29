@@ -65,7 +65,7 @@ class AdjustmentController
      */
     private function __assign($input_adjustment)
     {
-        $adjustment = new Adjustment($this->apiDomain);
+        $adjustment = new Adjustment($this->accessPoint);
         foreach ($input_adjustment as $key => $value) {
             if (property_exists($adjustment, $key)) {
                 $adjustment->$key = $value;

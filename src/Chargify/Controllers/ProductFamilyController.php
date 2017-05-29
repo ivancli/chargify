@@ -142,7 +142,7 @@ class ProductFamilyController
      */
     private function __assign($input_product_family)
     {
-        $productFamily = new ProductFamily($this->apiDomain);
+        $productFamily = new ProductFamily($this->accessPoint);
         foreach ($input_product_family as $key => $value) {
             if (property_exists($productFamily, $key)) {
                 $productFamily->$key = $value;

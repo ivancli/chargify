@@ -157,7 +157,7 @@ class StatementController
      */
     private function __assign($input_statement)
     {
-        $statement = new Statement($this->apiDomain);
+        $statement = new Statement($this->accessPoint);
         foreach ($input_statement as $key => $value) {
             if (property_exists($statement, $key)) {
                 $statement->$key = $value;

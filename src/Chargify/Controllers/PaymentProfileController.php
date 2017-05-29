@@ -107,7 +107,7 @@ class PaymentProfileController
      */
     private function __assign($input_payment_profile)
     {
-        $paymentProfile = new PaymentProfile($this->apiDomain);
+        $paymentProfile = new PaymentProfile($this->accessPoint);
         foreach ($input_payment_profile as $key => $value) {
             if (property_exists($paymentProfile, $key)) {
                 $paymentProfile->$key = $value;
