@@ -103,7 +103,7 @@ class WebhookController
      */
     private function __assign($input_transaction)
     {
-        $transaction = new Webhook;
+        $transaction = new Webhook($this->apiDomain);
         foreach ($input_transaction as $key => $value) {
             if (property_exists($transaction, $key)) {
                 $transaction->$key = $value;

@@ -46,7 +46,7 @@ class ProductFamilyController
     public function all()
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.product_families", config('chargify.caching.ttl'), function () {
+            return Cache::remember("{$this->apiDomain}.product_families", config('chargify.caching.ttl'), function () {
                 return $this->__all();
             });
         } else {
@@ -63,7 +63,7 @@ class ProductFamilyController
     public function get($product_family_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.product_families.{$product_family_id}", config('chargify.caching.ttl'), function () use ($product_family_id) {
+            return Cache::remember("{$this->apiDomain}.product_families.{$product_family_id}", config('chargify.caching.ttl'), function () use ($product_family_id) {
                 return $this->___get($product_family_id);
             });
         } else {
@@ -81,7 +81,7 @@ class ProductFamilyController
         $productFamily = $this->_post($this->accessPoint, $url, $data);
         if (isset($productFamily->product_family)) {
             $productFamily = $this->__assign($productFamily->product_family);
-            Cache::forget("{$this->accessPoint}.product_families");
+            Cache::forget("{$this->apiDomain}.product_families");
         }
         return $productFamily;
     }
@@ -93,9 +93,9 @@ class ProductFamilyController
         $coupon = $this->_delete($this->accessPoint, $url);
         if (isset($coupon->coupon)) {
             $coupon = true;
-            Cache::forget("{$this->accessPoint}.coupons.{$coupon_id}");
-            Cache::forget("{$this->accessPoint}.product_families.{$product_family_id}");
-            Cache::forget("{$this->accessPoint}.product_families");
+            Cache::forget("{$this->apiDomain}.coupons.{$coupon_id}");
+            Cache::forget("{$this->apiDomain}.product_families.{$product_family_id}");
+            Cache::forget("{$this->apiDomain}.product_families");
         }
         return $coupon;
     }
@@ -142,7 +142,7 @@ class ProductFamilyController
      */
     private function __assign($input_product_family)
     {
-        $productFamily = new ProductFamily;
+        $productFamily = new ProductFamily($this->apiDomain);
         foreach ($input_product_family as $key => $value) {
             if (property_exists($productFamily, $key)) {
                 $productFamily->$key = $value;

@@ -72,13 +72,13 @@ class Subscription
     private $componentController;
     private $noteController;
 
-    public function __construct()
+    public function __construct($accessPoint = 'au')
     {
-        $this->customerController = new CustomerController;
-        $this->productController = new ProductController;
-        $this->paymentProfileController = new PaymentProfileController;
-        $this->componentController = new ComponentController;
-        $this->noteController = new NoteController;
+        $this->customerController = new CustomerController($accessPoint);
+        $this->productController = new ProductController($accessPoint);
+        $this->paymentProfileController = new PaymentProfileController($accessPoint);
+        $this->componentController = new ComponentController($accessPoint);
+        $this->noteController = new NoteController($accessPoint);
     }
 
     /**

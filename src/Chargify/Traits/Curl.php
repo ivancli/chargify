@@ -12,7 +12,7 @@ trait Curl
     {
         $options = array(
             "headers" => $headers,
-            "userpass" => config("{$accessPoint}.chargify.api_key") . ":" . config('chargify.api_password')
+            "userpass" => config("chargify.{$accessPoint}.api_key") . ":" . config("chargify.{$accessPoint}.api_password"),
         );
         $response = $this->__sendCurl($url, $options);
         return json_decode($response);
@@ -25,7 +25,7 @@ trait Curl
             "method" => "post",
             "fields" => is_null($data) ? null : json_encode($data),
             "data_type" => "json",
-            "userpass" => config("{$accessPoint}.chargify.api_key") . ":" . config('chargify.api_password')
+            "userpass" => config("chargify.{$accessPoint}.api_key") . ":" . config("chargify.{$accessPoint}.api_password"),
         );
         $response = $this->__sendCurl($url, $options);
         return json_decode($response);
@@ -38,7 +38,7 @@ trait Curl
             "method" => "put",
             "fields" => is_null($data) ? null : json_encode($data),
             "data_type" => "json",
-            "userpass" => config("{$accessPoint}.chargify.api_key") . ":" . config('chargify.api_password')
+            "userpass" => config("chargify.{$accessPoint}.api_key") . ":" . config("chargify.{$accessPoint}.api_password"),
         );
         $response = $this->__sendCurl($url, $options);
         return json_decode($response);
@@ -51,7 +51,7 @@ trait Curl
             "method" => "delete",
             "fields" => is_null($data) ? null : json_encode($data),
             "data_type" => "json",
-            "userpass" => config("{$accessPoint}.chargify.api_key") . ":" . config('chargify.api_password'),
+            "userpass" => config("chargify.{$accessPoint}.api_key") . ":" . config("chargify.{$accessPoint}.api_password"),
             "show_header" => 1
         );
         $response = $this->__sendCurl($url, $options);

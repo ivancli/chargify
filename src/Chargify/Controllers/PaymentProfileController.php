@@ -47,7 +47,7 @@ class PaymentProfileController
     public function get($payment_profile_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.payment_profiles.{$payment_profile_id}", config('chargify.caching.ttl'), function () use ($payment_profile_id) {
+            return Cache::remember("{$this->apiDomain}.payment_profiles.{$payment_profile_id}", config('chargify.caching.ttl'), function () use ($payment_profile_id) {
                 return $this->___get($payment_profile_id);
             });
         } else {
@@ -107,7 +107,7 @@ class PaymentProfileController
      */
     private function __assign($input_payment_profile)
     {
-        $paymentProfile = new PaymentProfile;
+        $paymentProfile = new PaymentProfile($this->apiDomain);
         foreach ($input_payment_profile as $key => $value) {
             if (property_exists($paymentProfile, $key)) {
                 $paymentProfile->$key = $value;

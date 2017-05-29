@@ -51,9 +51,9 @@ class PaymentProfile
 
     private $customerController;
 
-    public function __construct()
+    public function __construct($accessPoint = 'au')
     {
-        $this->customerController = new CustomerController;
+        $this->customerController = new CustomerController($accessPoint);
     }
 
     public function customer()

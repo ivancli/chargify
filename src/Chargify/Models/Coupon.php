@@ -41,9 +41,9 @@ class Coupon
 
     private $productFamilyController;
 
-    public function __construct($id = null)
+    public function __construct($accessPoint = 'au', $id = null)
     {
-        $this->productFamilyController = new ProductFamilyController;
+        $this->productFamilyController = new ProductFamilyController($accessPoint);
     }
 
     public function productFamily()

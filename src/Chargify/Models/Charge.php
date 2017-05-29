@@ -40,11 +40,11 @@ class Charge
     private $productController;
     private $transactionController;
 
-    public function __construct()
+    public function __construct($accessPoint = 'au')
     {
-        $this->subscriptionController = new SubscriptionController;
-        $this->productController = new ProductController;
-        $this->transactionController = new TransactionController;
+        $this->subscriptionController = new SubscriptionController($accessPoint);
+        $this->productController = new ProductController($accessPoint);
+        $this->transactionController = new TransactionController($accessPoint);
     }
 
     public function subscription()

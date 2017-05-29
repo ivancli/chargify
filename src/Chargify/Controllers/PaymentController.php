@@ -71,7 +71,7 @@ class PaymentController
      */
     private function __assign($input_payment)
     {
-        $payment = new Payment;
+        $payment = new Payment($this->apiDomain);
         foreach ($input_payment as $key => $value) {
             if (property_exists($payment, $key)) {
                 $payment->$key = $value;

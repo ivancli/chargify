@@ -32,7 +32,7 @@ class Invoice
     public $charges;
     public $payments_and_credits;
 
-    public function __construct($id = null)
+    public function __construct($accessPoint = 'au', $id = null)
     {
 
     }

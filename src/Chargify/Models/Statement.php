@@ -48,9 +48,9 @@ class Statement
 
     private $subscriptionController;
 
-    public function __construct()
+    public function __construct($accessPoint = 'au')
     {
-        $this->subscriptionController = new SubscriptionController;
+        $this->subscriptionController = new SubscriptionController($accessPoint);
     }
 
     public function subscription()

@@ -53,7 +53,7 @@ class ComponentController
     public function allByProductFamily($product_family_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.product_families.{$product_family_id}.components", config('chargify.caching.ttl'), function () use ($product_family_id) {
+            return Cache::remember("{$this->apiDomain}.product_families.{$product_family_id}.components", config('chargify.caching.ttl'), function () use ($product_family_id) {
                 return $this->__allByProductFamily($product_family_id);
             });
         } else {
@@ -70,7 +70,7 @@ class ComponentController
     public function allBySubscription($subscription_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.subscriptions.{$subscription_id}.components", config('chargify.caching.ttl'), function () use ($subscription_id) {
+            return Cache::remember("{$this->apiDomain}.subscriptions.{$subscription_id}.components", config('chargify.caching.ttl'), function () use ($subscription_id) {
                 return $this->__allBySubscription($subscription_id);
             });
         } else {
@@ -88,7 +88,7 @@ class ComponentController
     public function getByProductFamily($product_family_id, $component_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.product_families.{$product_family_id}.components.{$component_id}", config('chargify.caching.ttl'), function () use ($product_family_id, $component_id) {
+            return Cache::remember("{$this->apiDomain}.product_families.{$product_family_id}.components.{$component_id}", config('chargify.caching.ttl'), function () use ($product_family_id, $component_id) {
                 return $this->__getByProductFamily($product_family_id, $component_id);
             });
         } else {
@@ -106,7 +106,7 @@ class ComponentController
     public function getBySubscription($subscription_id, $component_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.subscriptions.{$subscription_id}.components.{$component_id}", config('chargify.caching.ttl'), function () use ($subscription_id, $component_id) {
+            return Cache::remember("{$this->apiDomain}.subscriptions.{$subscription_id}.components.{$component_id}", config('chargify.caching.ttl'), function () use ($subscription_id, $component_id) {
                 return $this->__getBySubscription($subscription_id, $component_id);
             });
         } else {
@@ -206,7 +206,7 @@ class ComponentController
      */
     private function __assign($input_component)
     {
-        $component = new Component;
+        $component = new Component($this->apiDomain);
         foreach ($input_component as $key => $value) {
             if (property_exists($component, $key)) {
                 $component->$key = $value;

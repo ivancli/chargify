@@ -71,7 +71,7 @@ class CouponController
     public function get($coupon_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.coupons.{$coupon_id}", config('chargify.caching.ttl'), function () use ($coupon_id) {
+            return Cache::remember("{$this->apiDomain}.coupons.{$coupon_id}", config('chargify.caching.ttl'), function () use ($coupon_id) {
                 return $this->___get($coupon_id);
             });
         } else {
@@ -90,9 +90,9 @@ class CouponController
     {
         if (config('chargify.caching.enable') == true) {
             if (!is_null($product_family_id)) {
-                $key = "{$this->accessPoint}.product_families.{$product_family_id}.coupons.coupon_code.{$coupon_code}";
+                $key = "{$this->apiDomain}.product_families.{$product_family_id}.coupons.coupon_code.{$coupon_code}";
             } else {
-                $key = "{$this->accessPoint}.coupons.coupon_code.{$coupon_code}";
+                $key = "{$this->apiDomain}.coupons.coupon_code.{$coupon_code}";
             }
             return Cache::remember($key, config('chargify.caching.ttl'), function () use ($coupon_code, $product_family_id) {
                 return $this->__find($coupon_code, $product_family_id);
@@ -206,7 +206,7 @@ class CouponController
         $coupon = $this->_put($this->accessPoint, $url, $data);
         if (isset($coupon->coupon)) {
             $coupon = $this->__assign($coupon->coupon);
-            Cache::forget("{$this->accessPoint}.coupons.{$coupon_id}");
+            Cache::forget("{$this->apiDomain}.coupons.{$coupon_id}");
         }
         return $coupon;
     }
@@ -222,7 +222,7 @@ class CouponController
         $result = $this->_delete($this->accessPoint, $url);
         if (is_null($result)) {
             $result = true;
-            Cache::forget("{$this->accessPoint}.coupons.{$coupon_id}");
+            Cache::forget("{$this->apiDomain}.coupons.{$coupon_id}");
         }
         return $result;
     }
@@ -360,7 +360,7 @@ class CouponController
      */
     private function __assign($input_coupon)
     {
-        $coupon = new Coupon;
+        $coupon = new Coupon($this->apiDomain);
         foreach ($input_coupon as $key => $value) {
             if (property_exists($coupon, $key)) {
                 $coupon->$key = $value;

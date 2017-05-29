@@ -34,88 +34,88 @@ class Chargify
         $this->app = $app;
     }
 
-    public static function adjustment($accessPoint = 'au')
+    public static function adjustment($storeLocation = 'au')
     {
-        return new AdjustmentController($accessPoint);
+        return new AdjustmentController($storeLocation);
     }
 
-    public static function allocation($accessPoint = 'au')
+    public static function allocation($storeLocation = 'au')
     {
-        return new AllocationController($accessPoint);
+        return new AllocationController($storeLocation);
     }
 
-    public static function charge($accessPoint = 'au')
+    public static function charge($storeLocation = 'au')
     {
-        return new ChargeController($accessPoint);
+        return new ChargeController($storeLocation);
     }
 
-    public static function component($accessPoint = 'au')
+    public static function component($storeLocation = 'au')
     {
-        return new ComponentController($accessPoint);
+        return new ComponentController($storeLocation);
     }
 
-    public static function coupon($accessPoint = 'au')
+    public static function coupon($storeLocation = 'au')
     {
-        return new CouponController($accessPoint);
+        return new CouponController($storeLocation);
     }
 
-    public static function customer($accessPoint = 'au')
+    public static function customer($storeLocation = 'au')
     {
-        return new CustomerController($accessPoint);
+        return new CustomerController($storeLocation);
     }
 
-    public static function invoice($accessPoint = 'au')
+    public static function invoice($storeLocation = 'au')
     {
-        return new InvoiceController($accessPoint);
+        return new InvoiceController($storeLocation);
     }
 
-    public static function note($accessPoint = 'au')
+    public static function note($storeLocation = 'au')
     {
-        return new NoteController($accessPoint);
+        return new NoteController($storeLocation);
     }
 
-    public static function payment($accessPoint = 'au')
+    public static function payment($storeLocation = 'au')
     {
-        return new PaymentController($accessPoint);
+        return new PaymentController($storeLocation);
     }
 
-    public static function paymentProfile($accessPoint = 'au')
+    public static function paymentProfile($storeLocation = 'au')
     {
-        return new PaymentProfileController($accessPoint);
+        return new PaymentProfileController($storeLocation);
     }
 
-    public static function product($accessPoint = 'au')
+    public static function product($storeLocation = 'au')
     {
-        return new ProductController($accessPoint);
+        return new ProductController($storeLocation);
     }
 
-    public static function productFamily($accessPoint = 'au')
+    public static function productFamily($storeLocation = 'au')
     {
-        return new ProductFamilyController($accessPoint);
+        return new ProductFamilyController($storeLocation);
     }
 
-    public static function site($accessPoint = 'au')
+    public static function site($storeLocation = 'au')
     {
-        return new SiteController($accessPoint);
+        return new SiteController($storeLocation);
     }
 
-    public static function statement($accessPoint = 'au')
+    public static function statement($storeLocation = 'au')
     {
-        return new StatementController($accessPoint);
+        return new StatementController($storeLocation);
     }
 
-    public static function subscription($accessPoint = 'au')
+    public static function subscription($storeLocation = 'au')
     {
-        return new SubscriptionController($accessPoint);
+        return new SubscriptionController($storeLocation);
     }
 
-    public static function transaction($accessPoint = 'au')
+    public static function transaction($storeLocation = 'au')
     {
-        return new TransactionController($accessPoint);
+        return new TransactionController($storeLocation);
     }
 
-    public static function webhook($accessPoint = 'au')
+    public static function webhook($storeLocation = 'au')
     {
-        return new WebhookController($accessPoint);
+        return new WebhookController($storeLocation);
     }
 }

@@ -49,9 +49,9 @@ class Product
 
     private $productFamilyController;
 
-    public function __construct()
+    public function __construct($accessPoint = 'au')
     {
-        $this->productFamilyController = new ProductFamilyController;
+        $this->productFamilyController = new ProductFamilyController($accessPoint);
     }
 
     public function productFamily()

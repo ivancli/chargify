@@ -46,7 +46,7 @@ class CustomerController
     public function getLink($customer_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.customers.{$customer_id}.link", config('chargify.caching.ttl'), function () use($customer_id){
+            return Cache::remember("{$this->apiDomain}.customers.{$customer_id}.link", config('chargify.caching.ttl'), function () use($customer_id){
                 return $this->__getLink($customer_id);
             });
         } else {
@@ -62,7 +62,7 @@ class CustomerController
     public function all()
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.customers", config('chargify.caching.ttl'), function () {
+            return Cache::remember("{$this->apiDomain}.customers", config('chargify.caching.ttl'), function () {
                 return $this->__all();
             });
         } else {
@@ -73,7 +73,7 @@ class CustomerController
     public function get($customer_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.customers.{$customer_id}", config('chargify.caching.ttl'), function () use ($customer_id) {
+            return Cache::remember("{$this->apiDomain}.customers.{$customer_id}", config('chargify.caching.ttl'), function () use ($customer_id) {
                 return $this->___get($customer_id);
             });
         } else {
@@ -112,7 +112,7 @@ class CustomerController
             "customer" => $fields
         );
         $data = json_decode(json_encode($data), false);
-        $customer = $this->_put($this->accessPoint, $url, $data);
+        $customer = $this->_put($url, $data);
         if (isset($customer->customer)) {
             $customer = $this->__assign($customer->customer);
             Cache::forget("{$this->accessPoint}.customers.{$customer_id}.link");
@@ -213,7 +213,7 @@ class CustomerController
 
     private function __assign($input_customer)
     {
-        $customer = new Customer;
+        $customer = new Customer($this->apiDomain);
         foreach ($input_customer as $key => $value) {
             if (property_exists($customer, $key)) {
                 $customer->$key = $value;

@@ -67,7 +67,7 @@ class ChargeController
 
     private function __assign($input_charge)
     {
-        $charge = new Charge;
+        $charge = new Charge($this->apiDomain);
         foreach ($input_charge as $key => $value) {
             if (property_exists($charge, $key)) {
                 $charge->$key = $value;

@@ -41,7 +41,7 @@ class NoteController
     public function get($subscription_id, $note_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.subscriptions.{$subscription_id}.notes.{$note_id}", config('chargify.caching.ttl'), function () use ($subscription_id, $note_id) {
+            return Cache::remember("{$this->apiDomain}.subscriptions.{$subscription_id}.notes.{$note_id}", config('chargify.caching.ttl'), function () use ($subscription_id, $note_id) {
                 return $this->___get($subscription_id, $note_id);
             });
         } else {
@@ -52,7 +52,7 @@ class NoteController
     public function allBySubscription($subscription_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.subscriptions.{$subscription_id}.notes", config('chargify.caching.ttl'), function () use ($subscription_id) {
+            return Cache::remember("{$this->apiDomain}.subscriptions.{$subscription_id}.notes", config('chargify.caching.ttl'), function () use ($subscription_id) {
                 return $this->__allBySubscription($subscription_id);
             });
         } else {
@@ -70,7 +70,7 @@ class NoteController
         $note = $this->_post($this->accessPoint, $url, $data);
         if (isset($note->note)) {
             $note = $this->__assign($note->note);
-            Cache::forget("{$this->accessPoint}.subscriptions.{$subscription_id}.notes");
+            Cache::forget("{$this->apiDomain}.subscriptions.{$subscription_id}.notes");
         }
         return $note;
     }
@@ -85,8 +85,8 @@ class NoteController
         $note = $this->_put($this->accessPoint, $url, $data);
         if (isset($note->note)) {
             $note = $this->__assign($note->note);
-            Cache::forget("{$this->accessPoint}.subscriptions.{$subscription_id}.notes.{$note->id}");
-            Cache::forget("{$this->accessPoint}.subscriptions.{$subscription_id}.notes");
+            Cache::forget("{$this->apiDomain}.subscriptions.{$subscription_id}.notes.{$note->id}");
+            Cache::forget("{$this->apiDomain}.subscriptions.{$subscription_id}.notes");
         }
         return $note;
     }
@@ -122,7 +122,7 @@ class NoteController
 
     private function __assign($input_note)
     {
-        $note = new Note;
+        $note = new Note($this->apiDomain);
         foreach ($input_note as $key => $value) {
             if (property_exists($note, $key)) {
                 $note->$key = $value;

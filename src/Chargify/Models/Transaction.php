@@ -47,10 +47,10 @@ class Transaction
     private $subscriptionController;
     private $productController;
 
-    public function __construct()
+    public function __construct($accessPoint = 'au')
     {
-        $this->subscriptionController = new SubscriptionController;
-        $this->productController = new ProductController;
+        $this->subscriptionController = new SubscriptionController($accessPoint);
+        $this->productController = new ProductController($accessPoint);
     }
 
     /**

@@ -37,10 +37,10 @@ class Adjustment
     private $productController;
     private $subscriptionController;
 
-    public function __construct()
+    public function __construct($accessPoint = 'au')
     {
-        $this->productController = new ProductController;
-        $this->subscriptionController = new SubscriptionController;
+        $this->productController = new ProductController($accessPoint);
+        $this->subscriptionController = new SubscriptionController($accessPoint);
     }
 
     public function product()

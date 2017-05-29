@@ -31,10 +31,10 @@ class ProductFamily
     private $productController;
     private $componentController;
 
-    public function __construct()
+    public function __construct($accessPoint = 'au')
     {
-        $this->productController = new ProductController;
-        $this->componentController = new ComponentController;
+        $this->productController = new ProductController($accessPoint);
+        $this->componentController = new ComponentController($accessPoint);
     }
 
     public function products()

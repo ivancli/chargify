@@ -138,7 +138,7 @@ class AllocationController
      */
     private function __assign($input_allocation)
     {
-        $allocation = new Allocation;
+        $allocation = new Allocation($this->apiDomain);
         foreach ($input_allocation as $key => $value) {
             if (property_exists($allocation, $key)) {
                 $allocation->$key = $value;

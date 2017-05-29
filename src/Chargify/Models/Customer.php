@@ -41,9 +41,9 @@ class Customer
 
     private $subscriptionController;
 
-    public function __construct($id = null)
+    public function __construct($accessPoint = 'au', $id = null)
     {
-        $this->subscriptionController = new SubscriptionController;
+        $this->subscriptionController = new SubscriptionController($accessPoint);
     }
 
     public function subscriptions()

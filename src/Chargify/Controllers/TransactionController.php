@@ -90,7 +90,7 @@ class TransactionController
 
     private function __assign($input_transaction)
     {
-        $transaction = new Transaction;
+        $transaction = new Transaction($this->apiDomain);
         foreach ($input_transaction as $key => $value) {
             if (property_exists($transaction, $key)) {
                 $transaction->$key = $value;

@@ -57,7 +57,7 @@ class InvoiceController
     public function get($invoice_id)
     {
         if (config('chargify.caching.enable') == true) {
-            return Cache::remember("{$this->accessPoint}.invoices.{$invoice_id}", config('chargify.caching.ttl'), function () use($invoice_id){
+            return Cache::remember("{$this->apiDomain}.invoices.{$invoice_id}", config('chargify.caching.ttl'), function () use($invoice_id){
                 return $this->___get($invoice_id);
             });
         } else {
@@ -109,7 +109,7 @@ class InvoiceController
      */
     private function __assign($input_invoice)
     {
-        $invoice = new Invoice;
+        $invoice = new Invoice($this->apiDomain);
         foreach ($input_invoice as $key => $value) {
             if (property_exists($invoice, $key)) {
                 $invoice->$key = $value;
