@@ -70,7 +70,7 @@ class SubscriptionController
     {
         if (config('chargify.caching.enable') == true && $noCache == false) {
             $encodedFields = json_encode($fields);
-            return Cache::remember("{$this->apiDomain}.subscriptions.{$encodedFields}", config('chargify.caching.ttl'), function () use ($fields) {
+            return Cache::remember("{$this->apiDomain}.preview.subscriptions.{$encodedFields}", config('chargify.caching.ttl'), function () use ($fields) {
                 return $this->__preview($fields);
             });
         } else {
