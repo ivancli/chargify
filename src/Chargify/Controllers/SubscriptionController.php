@@ -380,8 +380,8 @@ class SubscriptionController
         );
         $data = json_decode(json_encode($data), false);
         $subscription = $this->_delete($this->accessPoint, $url, json_encode($data));
+        Cache::forget("{$this->apiDomain}.chargify.subscriptions.{$subscription_id}");
         if (isset($subscription->subscription)) {
-            Cache::forget("{$this->apiDomain}.chargify.subscriptions.{$subscription_id}");
             Cache::forget("{$this->apiDomain}.chargify.customers.{$subscription->customer_id}.subscriptions");
             return $subscription->subscription;
         }
