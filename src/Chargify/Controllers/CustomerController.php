@@ -115,7 +115,7 @@ class CustomerController
         $customer = $this->_put($url, $data);
         if (isset($customer->customer)) {
             $customer = $this->__assign($customer->customer);
-            Cache::forget("{$this->accessPoint}.customers.{$customer_id}.link");
+            Cache::forget("{$this->apiDomain}.customers.{$customer_id}.link");
         }
         return $customer;
     }
@@ -126,7 +126,7 @@ class CustomerController
         $customer = $this->_delete($this->accessPoint, $url);
         if (is_null($customer)) {
             $customer = true;
-            Cache::forget("{$this->accessPoint}.customers.{$customer_id}.link");
+            Cache::forget("{$this->apiDomain}.customers.{$customer_id}.link");
         }
         return $customer;
     }

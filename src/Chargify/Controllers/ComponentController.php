@@ -131,7 +131,7 @@ class ComponentController
         $component = $this->_post($this->accessPoint, $url, $data);
         if (isset($component->$plural_kind)) {
             $output = $this->__assign($component->$plural_kind);
-            Cache::forget("{$this->accessPoint}.product_families.{$product_family_id}.components");
+            Cache::forget("{$this->apiDomain}.product_families.{$product_family_id}.components");
             return $output;
         } else {
             return $component;

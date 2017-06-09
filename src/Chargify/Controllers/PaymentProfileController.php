@@ -79,7 +79,7 @@ class PaymentProfileController
         $paymentProfile = $this->_put($this->accessPoint, $url, $data);
         if (isset($paymentProfile->payment_profile)) {
             $paymentProfile = $this->__assign($paymentProfile->payment_profile);
-            Cache::forget("{$this->accessPoint}.payment_profiles.{$payment_profile_id}");
+            Cache::forget("{$this->apiDomain}.payment_profiles.{$payment_profile_id}");
         }
         return $paymentProfile;
     }
