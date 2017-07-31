@@ -117,11 +117,12 @@ class CouponController
      * Check a coupon code's validity
      *
      * @param $coupon_code
+     * @param null $product_family_id
      * @return Coupon|mixed
      */
-    public function validate($coupon_code)
+    public function validate($coupon_code, $product_family_id = null)
     {
-        return $this->__validate($coupon_code);
+        return $this->__validate($coupon_code, $product_family_id);
     }
 
     /**
@@ -274,11 +275,15 @@ class CouponController
 
     /**
      * @param $coupon_code
+     * @param null $product_family_id
      * @return Coupon|mixed
      */
-    private function __validate($coupon_code)
+    private function __validate($coupon_code, $product_family_id = null)
     {
         $url = $this->apiDomain . "coupons/validate.json?code={$coupon_code}";
+        if (!is_null($product_family_id)) {
+            $url = $url . "&product_family_id=" . $product_family_id;
+        }
         $coupon = $this->_get($this->accessPoint, $url);
         if (isset($coupon->coupon)) {
             $coupon = $coupon->coupon;
